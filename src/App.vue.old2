@@ -1,0 +1,467 @@
+<template>
+  <v-app id="inspire">
+    <v-content v-if="!accessToken" style="background-color: #4CAF50">
+      <v-container class="fill-height" fluid>
+        <v-row align="center" justify="center">
+          <v-col cols="12" sm="6" md="3" align="center">
+            <div style="margin-bottom: 50px">
+              <v-img src="/img/plans_logo_without_bg.png" max-width="250" />
+            </div>
+            <v-card class="elevation-12">
+              <v-toolbar color="grey darken-4" flat height="10"></v-toolbar>
+              <v-tabs fixed-tabs background-color="grey darken-3" dark v-model="tab">
+                <v-tab>Login</v-tab>
+                <v-tab>Register</v-tab>
+              </v-tabs>
+              <v-tabs-items v-model="tab">
+                <v-tab-item>
+                  <v-card-text>
+                    <!--<v-alert
+                  type="success"
+                  icon="mdi-shield-lock-outline"
+                  text
+                    >Enter your credentials to login</v-alert>-->
+                    <v-alert
+                      v-model="registerSuccess"
+                      dense
+                      type="info"
+                      dismissible
+                    >Registration success. You can now login</v-alert>
+                    <v-alert
+                      v-model="loginFailure"
+                      dense
+                      type="error"
+                      dismissible
+                    >Invalid login or password</v-alert>
+                    <v-form @keyup.native.enter="doLogin()">
+                      <v-text-field
+                        label="Mail"
+                        name="mail"
+                        type="text"
+                        prepend-inner-icon="mdi-at"
+                        rounded
+                        filled
+                        v-model="mail"
+                        class="mb-n4"
+                      />
+                      <v-text-field
+                        id="password"
+                        label="Password"
+                        name="password"
+                        type="password"
+                        prepend-inner-icon="mdi-lock"
+                        rounded
+                        filled
+                        height="5"
+                        v-model="password"
+                      />
+                      <v-btn color="green" block outlined rounded @click="doLogin()">Login</v-btn>
+                    </v-form>
+                    <h5 class="ma-2">Forgot username or password ?</h5>
+                  </v-card-text>
+                </v-tab-item>
+                <v-tab-item>
+                  <v-card-text>
+                    <v-alert
+                      v-model="registerErrorDuplicate"
+                      dense
+                      type="error"
+                      dismissible
+                    >This mail address is already registered</v-alert>
+                    <v-form @keyup.native.enter="doRegister()">
+                      <v-text-field
+                        label="Enter your mail address"
+                        name="registerMail"
+                        type="text"
+                        prepend-inner-icon="mdi-at"
+                        rounded
+                        filled
+                        v-model="registerMail"
+                        class="mb-n4"
+                      />
+                      <v-text-field
+                        label="Enter your firstname"
+                        name="firstname"
+                        type="text"
+                        prepend-inner-icon="mdi-at"
+                        rounded
+                        filled
+                        v-model="firstname"
+                        class="mb-n4"
+                      />
+                      <v-text-field
+                        label="Enter your lastname"
+                        name="lastname"
+                        type="text"
+                        prepend-inner-icon="mdi-at"
+                        rounded
+                        filled
+                        v-model="lastname"
+                        class="mb-n4"
+                      />
+                      <v-text-field
+                        id="password"
+                        label="Define your password"
+                        name="password"
+                        type="password"
+                        prepend-inner-icon="mdi-lock"
+                        rounded
+                        filled
+                        height="5"
+                        v-model="registerPassword"
+                        class="mb-n4"
+                      />
+                      <v-text-field
+                        id="password"
+                        label="Re-enter your password"
+                        name="password"
+                        type="password"
+                        prepend-inner-icon="mdi-lock-check"
+                        rounded
+                        filled
+                        height="5"
+                        v-model="registerPasswordCheck"
+                      />
+                      <v-btn color="red" block outlined rounded @click="doRegister()">Register</v-btn>
+                    </v-form>
+                  </v-card-text>
+                </v-tab-item>
+              </v-tabs-items>
+            </v-card>
+          </v-col>
+        </v-row>
+      </v-container>
+    </v-content>
+    <v-content v-if="accessToken">
+      <v-app-bar :clipped-left="$vuetify.breakpoint.lgAndUp" app color="green" dark>
+        <v-toolbar-title style="width: 400px" class="ml-0 pl-4">
+          <v-img
+            src="/img/plans_logo_without_bg.png"
+            alt="runio"
+            max-width="100"
+            @click.native="goHome"
+            style="cursor: pointer"
+          />
+        </v-toolbar-title>
+        <v-spacer />
+        <v-btn icon>
+          <v-icon>mdi-account-circle</v-icon>
+        </v-btn>
+        <v-btn @click="showDialog()">
+          <v-icon>mdi-plus</v-icon>Activité
+        </v-btn>
+      </v-app-bar>
+      <v-container>
+        <v-row align="center" justify="center">
+          <router-view></router-view>
+        </v-row>
+      </v-container>
+      <v-bottom-navigation app fixed grow dark v-model="bottomNav">
+        <v-btn value="activities" href="/#/">
+          <span>Activities</span>
+          <v-icon>mdi-run</v-icon>
+        </v-btn>
+        <v-btn value="calendar" href="/#/calendar">
+          <span>Calendar</span>
+          <v-icon>mdi-calendar</v-icon>
+        </v-btn>
+        <v-btn value="workout" href="/#/activity">
+          <span>Workout</span>
+          <v-icon>mdi-dumbbell</v-icon>
+        </v-btn>
+      </v-bottom-navigation>
+    </v-content>
+
+    <v-dialog v-model="dialog" width="800px">
+      <v-card>
+        <v-card-title class="grey lighten-1">Import activity</v-card-title>
+        <v-container>
+          <v-row class="mx-2">
+            <v-col cols="12">
+              <v-text-field
+                prepend-icon="mdi-text-box-outline"
+                label="Activity name"
+                outlined
+                dense
+                v-model="activityName"
+              />
+              <v-textarea
+                prepend-icon="mdi-text-box-outline"
+                label="Activity description"
+                outlined
+                dense
+                auto-grow
+                v-model="activityDescription"
+              />
+              <v-file-input
+                accept="*.tcx"
+                show-size
+                label="Activity file (TCX)"
+                outlined
+                dense
+                v-model="activityFile"
+              ></v-file-input>
+              <v-radio-group prepend-icon="mdi-trophy" v-model="activityType" row>
+                <v-radio v-for="a in activityTypes" :key="a" :label="a.name" :value="a.name"></v-radio>
+              </v-radio-group>
+              <div v-if="activityType === 'Race'">
+                <v-radio-group prepend-icon="mdi-trophy" v-model="raceTypeId" row>
+                  <v-radio v-for="r in raceTypes" :key="r" :label="r.name" :value="r.id"></v-radio>
+                </v-radio-group>
+              </div>
+              <div v-if="activityType === 'Training'">
+                <v-select
+                  prepend-icon="mdi-trophy"
+                  v-model="trainingTypesIds"
+                  :items="trainingTypes"
+                  item-text="name"
+                  label="Select Item"
+                  multiple
+                  outlined
+                  dense
+                  item-value="id"
+                ></v-select>
+              </div>
+            </v-col>
+          </v-row>
+        </v-container>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn text color="red lighten-1" @click="dialog=false">Cancel</v-btn>
+          <v-btn text color="light-blue darken-3" @click="importActivity()">Import</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+    <v-dialog v-model="progressbar" width="800px">
+      <v-card>
+        <v-card-title class="grey lighten-1">Import in progress ...</v-card-title>
+        <v-container>
+          <v-row class="mx-2">
+            <v-col cols="12">
+              <v-progress-linear color="deep-purple accent-4" indeterminate rounded height="6"></v-progress-linear>
+            </v-col>
+          </v-row>
+        </v-container>
+      </v-card>
+    </v-dialog>
+
+    <v-snackbar v-model="snackbar" bottom color="green">
+      Activity successfully imported
+      <v-btn dark text @click="snackbar = false">Close</v-btn>
+    </v-snackbar>
+  </v-app>
+</template>
+
+<script>
+import axios from "axios";
+export default {
+  props: {
+    source: String
+  },
+  data: () => ({
+    tab: null,
+    registerMail: null,
+    firstname: null,
+    lastname: null,
+    registerPassword: null,
+    registerPasswordCheck: null,
+    registerSuccess: false,
+    registerErrorDuplicate: false,
+    //accessToken: null,
+    mail: null,
+    password: null,
+    loginFailure: false,
+    dialog: false,
+    snackbar: false,
+    progressbar: false,
+    activityName: null,
+    activityDescription: null,
+    activityFile: null,
+    activityTypes: [],
+    activityType: null,
+    raceTypes: [],
+    raceTypeId: null,
+    trainingTypes: [],
+    trainingTypesIds: []
+  }),
+  mounted() {
+    if (localStorage.accessToken) {
+      this.accessToken = localStorage.accessToken;
+    }
+  },
+  computed: {
+    accessToken() {
+      return this.$store.state.accessToken;
+    }
+  },
+  methods: {
+    goHome() {
+      this.$router.push("/");
+    },
+    showDialog() {
+      this.dialog = true;
+      this.getActivityTypes();
+      this.getRaceTypes();
+      this.getTrainingTypes();
+    },
+    importActivity() {
+      this.dialog = false;
+      this.progressbar = true;
+      var bodyFormData = new FormData();
+      bodyFormData.set("name", this.activityName);
+      bodyFormData.set("description", this.activityDescription);
+      bodyFormData.set("type", this.activityType);
+      bodyFormData.append("file", this.activityFile);
+      axios({
+        method: "post",
+        url: this.$apiURL + "/activities",
+        data: bodyFormData,
+        headers: { "Content-Type": "multipart/form-data" }
+      })
+        .then(response => {
+          var activityId = response.data.id;
+          if (response.status == 200) {
+            if (this.activityType == "Race") {
+              bodyFormData = new FormData();
+              bodyFormData.set("activityId", activityId);
+              bodyFormData.set("racetypeId", this.raceTypeId);
+              axios({
+                method: "post",
+                url: this.$apiURL + "/races",
+                data: bodyFormData,
+                headers: { "Content-Type": "multipart/form-data" }
+              })
+                .then(response => {
+                  if (response.status == 200) {
+                    this.progressbar = false;
+                    this.snackbar = true;
+                  }
+                })
+                .catch(error => {
+                  console.log(error);
+                });
+            } else if (this.activityType == "Training") {
+              bodyFormData = new FormData();
+              bodyFormData.set("activityId", activityId);
+              bodyFormData.set("trainingTypesIds", this.trainingTypesIds);
+              axios({
+                method: "post",
+                url: this.$apiURL + "/trainings",
+                data: bodyFormData,
+                headers: { "Content-Type": "multipart/form-data" }
+              })
+                .then(response => {
+                  if (response.status == 200) {
+                    this.progressbar = false;
+                    this.snackbar = true;
+                  }
+                })
+                .catch(error => {
+                  console.log(error);
+                });
+            }
+          }
+        })
+        .catch(error => {
+          console.log(error);
+        });
+    },
+    getActivityTypes() {
+      axios({
+        method: "get",
+        url: this.$apiURL + "/activitytypes"
+      })
+        .then(response => {
+          if (response.status == 200) {
+            this.activityTypes = response.data;
+          }
+        })
+        .catch(error => {
+          console.log(error);
+        });
+    },
+    getRaceTypes() {
+      axios({
+        method: "get",
+        url: this.$apiURL + "/racetypes"
+      })
+        .then(response => {
+          if (response.status == 200) {
+            this.raceTypes = response.data;
+          }
+        })
+        .catch(error => {
+          console.log(error);
+        });
+    },
+    getTrainingTypes() {
+      axios({
+        method: "get",
+        url: this.$apiURL + "/trainingtypes"
+      })
+        .then(response => {
+          if (response.status == 200) {
+            this.trainingTypes = response.data;
+          }
+        })
+        .catch(error => {
+          console.log(error);
+        });
+    },
+    doLogin() {
+      let data = JSON.stringify({
+        username: this.mail,
+        password: this.password
+      });
+      console.log(this.accessToken);
+      axios({
+        method: "post",
+        url: this.$apiURL + "/auth",
+        data: data,
+        headers: {
+          "Content-Type": "application/json"
+        }
+      })
+        .then(response => {
+          console.log(response.data);
+          if (response.status == 200) {
+            //this.accessToken = response.data.access_token;
+            //localStorage.accessToken = this.accessToken;
+            this.$store.commit("updateAT", response.data.access_token)
+          }
+        })
+        .catch(error => {
+          if (error.response.status == 401) {
+            this.loginFailure = true;
+          } else {
+            console.log(error.response.status);
+          }
+        });
+    },
+    doRegister() {
+      var bodyFormData = new FormData();
+      bodyFormData.set("username", this.registerMail);
+      bodyFormData.set("password", this.registerPassword);
+      bodyFormData.set("firstname", this.firstname);
+      bodyFormData.set("lastname", this.lastname);
+      axios({
+        method: "post",
+        url: this.$apiURL + "/register",
+        data: bodyFormData
+      })
+        .then(response => {
+          if (response.status == 201) {
+            this.registerSuccess = true;
+            this.tab = "Login";
+          }
+        })
+        .catch(error => {
+          console.log(error.response.status);
+          if (error.response.status == 409) {
+            this.registerErrorDuplicate = true;
+          }
+        });
+    }
+  }
+};
+</script>
