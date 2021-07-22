@@ -1,196 +1,155 @@
 <template>
-  <div id="app">
-    <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
-    </div>
-    <div>
-          <v-container class="fill-height" fluid>
-        <v-row align="center" justify="center">
+  <v-app style="background: url('https://cdn.vuetifyjs.com/images/parallax/material2.jpg') no-repeat center center fixed !important;  background-size: cover">
+      <v-main>
+      <v-container class="fill-height" fluid>
+     <v-row align="center" justify="center">
           <v-col cols="12" sm="6" md="3" align="center">
-                        <v-card class="elevation-12">
-              <v-toolbar color="grey darken-4" flat height="10"></v-toolbar>
-              <v-tabs fixed-tabs background-color="grey darken-3" dark v-model="tab">
-                <v-tab>Login</v-tab>
-                <v-tab>Register</v-tab>
-              </v-tabs>
-              <v-tabs-items v-model="tab">
-                <v-tab-item>
-                  <v-card-text>
-                    <!--<v-alert
-                  type="success"
-                  icon="mdi-shield-lock-outline"
-                  text
-                    >Enter your credentials to login</v-alert>-->
-                    <v-alert
-                      v-model="registerSuccess"
+          <v-card elevation="6" light tag="section" v-if="accessToken == null">
+            <v-card-title>
+              <v-layout align-center justify-space-between>
+           
+                <v-flex>
+                  <v-img :alt="platformName" class="ml-3" contain height="48px" position="center" src="https://www.mobygames.com/images/i/12/25/1435075.png"></v-img>
+                </v-flex>
+              </v-layout>
+            </v-card-title>
+            <v-divider></v-divider>
+            <v-card-text>
+              <v-alert
+                      v-model="invalidUsername"
                       dense
-                      type="info"
+                      type="warning"
                       dismissible
-                    >Registration success. You can now login</v-alert>
-                    <v-alert
-                      v-model="loginFailure"
+                    >Invalid username</v-alert>
+              <v-form class="mt-5">
+                <v-text-field
+            label="Username"
+            outlined
+                              v-model="username"></v-text-field>
+              </v-form>
+            </v-card-text>
+            <v-divider></v-divider>
+            <v-card-actions :class="{ 'pa-3': $vuetify.breakpoint.smAndUp }">
+               <v-btn
+      text
+    >
+Register              </v-btn>
+              <v-spacer></v-spacer>
+              <v-btn color="primary" :large="$vuetify.breakpoint.smAndUp" @click="sendUsername()">
+                Login
+              </v-btn>
+            </v-card-actions>
+          </v-card>
+
+          <v-card elevation="6" light tag="section" v-if="accessToken != null">
+            <v-card-title>
+              <v-layout align-center justify-space-between>
+           
+                <v-flex>
+                  <v-img :alt="platformName" class="ml-3" contain height="48px" position="center" src="https://www.mobygames.com/images/i/12/25/1435075.png"></v-img>
+                </v-flex>
+              </v-layout>
+            </v-card-title>
+            <v-divider></v-divider>
+            <v-card-text>
+              <v-alert
+                      v-model="invalidUsername"
                       dense
-                      type="error"
+                      type="warning"
                       dismissible
-                    >Invalid login or password</v-alert>
-                    <v-form @keyup.native.enter="doLogin()">
-                      <v-text-field
-                        label="Mail"
-                        name="mail"
-                        type="text"
-                        prepend-inner-icon="mdi-at"
-                        rounded
-                        filled
-                        v-model="mail"
-                        class="mb-n4"
-                      />
-                      <v-text-field
-                        id="password"
-                        label="Password"
-                        name="password"
-                        type="password"
-                        prepend-inner-icon="mdi-lock"
-                        rounded
-                        filled
-                        height="5"
-                        v-model="password"
-                      />
-                      <v-btn color="green" block outlined rounded @click="doLogin()">Login</v-btn>
-                    </v-form>
-                    <h5 class="ma-2">Forgot username or password ?</h5>
-                  </v-card-text>
-                </v-tab-item>
-                <v-tab-item>
-                  <v-card-text>
-                    <v-alert
-                      v-model="registerErrorDuplicate"
-                      dense
-                      type="error"
-                      dismissible
-                    >This mail address is already registered</v-alert>
-                    <v-form @keyup.native.enter="doRegister()">
-                      <v-text-field
-                        label="Enter your mail address"
-                        name="registerMail"
-                        type="text"
-                        prepend-inner-icon="mdi-at"
-                        rounded
-                        filled
-                        v-model="registerMail"
-                        class="mb-n4"
-                      />
-                      <v-text-field
-                        label="Enter your firstname"
-                        name="firstname"
-                        type="text"
-                        prepend-inner-icon="mdi-at"
-                        rounded
-                        filled
-                        v-model="firstname"
-                        class="mb-n4"
-                      />
-                      <v-text-field
-                        label="Enter your lastname"
-                        name="lastname"
-                        type="text"
-                        prepend-inner-icon="mdi-at"
-                        rounded
-                        filled
-                        v-model="lastname"
-                        class="mb-n4"
-                      />
-                      <v-text-field
-                        id="password"
-                        label="Define your password"
-                        name="password"
-                        type="password"
-                        prepend-inner-icon="mdi-lock"
-                        rounded
-                        filled
-                        height="5"
-                        v-model="registerPassword"
-                        class="mb-n4"
-                      />
-                      <v-text-field
-                        id="password"
-                        label="Re-enter your password"
-                        name="password"
-                        type="password"
-                        prepend-inner-icon="mdi-lock-check"
-                        rounded
-                        filled
-                        height="5"
-                        v-model="registerPasswordCheck"
-                      />
-                      <v-btn color="red" block outlined rounded @click="doRegister()">Register</v-btn>
-                    </v-form>
-                  </v-card-text>
-                </v-tab-item>
-              </v-tabs-items>
-            </v-card>
-            </v-col>
-        </v-row>
-      </v-container>
-    </div>
-    <router-view/>
-  </div>
+                    >Invalid username</v-alert>
+              <v-form class="mt-5">
+                <v-text-field
+            label="Usernameeee"
+            outlined
+                              v-model="username"></v-text-field>
+              </v-form>
+            </v-card-text>
+            <v-divider></v-divider>
+            <v-card-actions :class="{ 'pa-3': $vuetify.breakpoint.smAndUp }">
+               <v-btn
+      text
+    >
+Register              </v-btn>
+              <v-spacer></v-spacer>
+              <v-btn color="primary" :large="$vuetify.breakpoint.smAndUp" @click="sendUsername()">
+                Login
+              </v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-col>
+
+      </v-row>
+    </v-container>
+      <router-view/>
+    </v-main>
+  </v-app>
 </template>
 
-<style lang="scss">
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-}
-
-#nav {
-  padding: 30px;
-
-  a {
-    font-weight: bold;
-    color: #2c3e50;
-
-    &.router-link-exact-active {
-      color: #42b983;
-    }
-  }
-}
-</style>
-
+<script src="@/cbor.js"></script>
 <script>
 import axios from "axios";
+
 export default {
-  props: {
-    source: String
-  },
+  name: 'App',
+
   data: () => ({
-    tab: null,
-    registerMail: null,
-    firstname: null,
-    lastname: null,
-    registerPassword: null,
-    registerPasswordCheck: null,
-    registerSuccess: false,
-    registerErrorDuplicate: false,
-    //accessToken: null,
-    mail: null,
-    password: null,
-    loginFailure: false,
-    dialog: false,
-    snackbar: false,
-    progressbar: false,
-    activityName: null,
-    activityDescription: null,
-    activityFile: null,
-    activityTypes: [],
-    activityType: null,
-    raceTypes: [],
-    raceTypeId: null,
-    trainingTypes: [],
-    trainingTypesIds: []
-  })
-}
-  </script>
+    username: null,
+    invalidUsername: false,
+    accessToken: null
+  }),
+
+  methods: {
+    sendUsername() {
+      const json = JSON.stringify({ username: this.username });
+      axios({
+        method: "post",
+        url: "https://localhost:5000/api/authenticate/username",
+        data: json,
+        headers: { 'Content-Type': 'application/json' }
+      })
+        .then(response => {
+          if (response.status == 200) {
+            this.accessToken = response.data.access_token
+            this.invalidUsername = false
+            this.fido2register()
+          }
+
+        })
+        .catch(error => {
+          if (error.response.status == 401) {
+            this.invalidUsername = true
+          }
+          console.log(error);
+        });
+    },
+    fido2register() {
+      fetch('https://localhost:5000/api/register/fido2/begin', {
+      method: 'POST',
+      headers: {'Authorization': 'Bearer ' + this.accessToken},
+    }).then(function(response) {
+      if(response.ok) return response.arrayBuffer();
+      throw new Error('Error getting registration data!');
+    }).then(CBOR.decode).then(function(options) {
+      return navigator.credentials.create(options);
+    }).then(function(attestation) {
+      return fetch('/api/register/fido2/complete', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/cbor', 'Authorization': 'Bearer ' + this.accessToken},
+        body: CBOR.encode({
+          "attestationObject": new Uint8Array(attestation.response.attestationObject),
+          "clientDataJSON": new Uint8Array(attestation.response.clientDataJSON),
+        })
+      });
+    }).then(function(response) {
+      var stat = response.ok ? 'successful' : 'unsuccessful';
+      alert('Registration ' + stat + ' More details in server log...');
+    }, function(reason) {
+      alert(reason);
+    }).then(function() {
+      window.location = '/';
+    });
+    }
+  }
+};
+</script>
