@@ -4,7 +4,7 @@
       <v-container class="fill-height" fluid>
      <v-row align="center" justify="center">
           <v-col cols="12" sm="6" md="3" align="center">
-          <v-card elevation="6" light tag="section" v-if="loginTokenState == null">
+          <v-card elevation="6" light tag="section" v-if="getAuthStep() == 1">
             <v-card-title>
               <v-layout align-center justify-space-between>
            
@@ -41,7 +41,7 @@ Register              </v-btn>
             </v-card-actions>
           </v-card>
 
-          <v-card elevation="6" light tag="section" v-if="loginTokenState == 0">
+          <v-card elevation="6" light tag="section" v-if="getAuthStep() == 4">
             <v-card-title>
               <v-layout align-center justify-space-between>
            
@@ -66,8 +66,34 @@ Register              </v-btn>
               </v-btn>
             </v-card-actions>
           </v-card>
-        </v-col>
 
+          <v-card elevation="6" light tag="section" v-if="getAuthStep() == 2">
+            <v-card-title>
+              <v-layout align-center justify-space-between>
+           
+                <v-flex>
+                  <v-img :alt="platformName" class="ml-3" contain height="48px" position="center" src="https://www.mobygames.com/images/i/12/25/1435075.png"></v-img>
+                </v-flex>
+              </v-layout>
+            </v-card-title>
+            <v-divider></v-divider>
+            <v-card-text>
+             <v-alert
+                      v-if="authMailStatus === 'send'"
+                      dense
+                      type="warning"
+                      dismissible
+                    >Invalid username</v-alert>
+            </v-card-text>
+            <v-divider></v-divider>
+            <v-card-actions :class="{ 'pa-3': $vuetify.breakpoint.smAndUp }">
+              <v-btn color="primary" :large="$vuetify.breakpoint.smAndUp" @click="sendAuthMail">
+                Send authentication mail
+              </v-btn>
+            </v-card-actions>
+          </v-card>
+
+        </v-col>
       </v-row>
     </v-container>
       <router-view/>
@@ -86,24 +112,60 @@ export default {
   data: () => ({
     username: null,
     invalidUsername: false,
-    loginToken: null,
-    loginTokenState: null
+    authToken: null,
+    authMailStatus: null
   }),
 
+  mounted() {
+    if(localStorage.authToken) {
+      this.authToken = localStorage.authToken;
+    }
+    else {
+      this.initAuth()
+    }
+  },
+
+  watch: {
+    authToken(newAuthToken) {
+      localStorage.authToken = newAuthToken;
+    }
+  },
+
   methods: {
+    initAuth() {
+      axios({
+        method: "post",
+        url: "https://noth.io:5000/authentication/init",
+        headers: { 'Content-Type': 'application/json' }
+      })
+        .then(response => {
+          if (response.status == 200) {
+            this.authToken = response.data.access_token
+          }
+        })
+        .catch(error => {
+          console.log(error);
+        });
+    },
+    getAuthStep() {
+      var authStep = 0;
+      if (this.authToken != null) {
+        authStep = jwt_decode(this.authToken).authstep;
+      }
+      return authStep;
+    },
     sendUsername() {
       const json = JSON.stringify({ username: this.username });
       axios({
         method: "post",
-        url: "https://localhost:5000/api/authenticate/username",
+        url: "https://noth.io:5000/authentication/username",
         data: json,
         headers: { 'Content-Type': 'application/json' }
       })
         .then(response => {
           if (response.status == 200) {
-            this.loginToken = response.data.access_token
+            this.authToken = response.data.access_token
             this.invalidUsername = false
-            this.loginTokenState = jwt_decode(this.loginToken).state
           }
 
         })
@@ -114,9 +176,25 @@ export default {
           console.log(error);
         });
     },
+    sendAuthMail() {
+      axios({
+        method: "post",
+        url: "https://noth.io:5000/authentication/mail",
+        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + this.authToken }
+      })
+        .then(response => {
+          if (response.status == 200) {
+            this.authMailStatus = "send";
+          }
+        })
+        .catch(error => {
+          this.authMailStatus = "error";
+          console.log(error);
+        });
+    },
     fido2register() {
-      var token = this.loginToken
-      fetch('https://localhost:5000/api/register/fido2/begin', {
+      var token = this.authToken
+      fetch('https://noth.io:5000/users/fido2/begin', {
       method: 'POST',
       headers: {'Authorization': 'Bearer ' + token},
       credentials: 'include'
@@ -126,7 +204,7 @@ export default {
     }).then(CBOR.decode).then(function(options) {
       return navigator.credentials.create(options);
     }).then(function(attestation) {
-      return fetch('https://localhost:5000/api/register/fido2/complete', {
+      return fetch('https://noth.io:5000/users/fido2/complete', {
         method: 'POST',
         headers: {'Content-Type': 'application/cbor', 'Authorization': 'Bearer ' + token},
         body: CBOR.encode({
@@ -145,12 +223,11 @@ export default {
     });
   },
   fido2authenticate() {
-    var token = this.loginToken
     var vm = this;
     axios({
-      url: 'https://localhost:5000/api/authenticate/fido2/begin',
+      url: 'https://noth.io:5000/authentication/fido2/begin',
       method: 'post',
-      headers: {'Authorization': 'Bearer ' + vm.loginToken},
+      headers: {'Authorization': 'Bearer ' + vm.authToken},
       withCredentials: true,
       responseType: 'arraybuffer'
     }).then(response => {
@@ -160,9 +237,9 @@ export default {
       return navigator.credentials.get(options);
     }).then(function(assertion) {
       return axios({
-        url: 'https://localhost:5000/api/authenticate/fido2/complete',
+        url: 'https://noth.io:5000/authentication/fido2/complete',
         method: 'post',
-        headers: {'Content-Type': 'application/cbor', 'Authorization': 'Bearer ' + vm.loginToken},
+        headers: {'Content-Type': 'application/cbor', 'Authorization': 'Bearer ' + vm.authToken},
         data: CBOR.encode({
           "credentialId": new Uint8Array(assertion.rawId),
           "authenticatorData": new Uint8Array(assertion.response.authenticatorData),
@@ -174,11 +251,10 @@ export default {
     }).then(function(response) {
       if(response.status == 200) {
         var stat = 'successful';
-        vm.loginToken = response.data.access_token;
-        vm.loginTokenState = jwt_decode(vm.loginToken);
+        vm.authToken = response.data.access_token;
       }
       else {
-        var stat = 'unsuccessful';
+        stat = 'unsuccessful';
       }
         alert('Authentication ' + stat + ' More details in server log...');
     }, function(reason) {
