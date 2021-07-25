@@ -135,7 +135,7 @@ export default {
     initAuth() {
       axios({
         method: "post",
-        url: "https://noth.io:5000/authentication/init",
+        url: "https://noth.o:5000/authentication/init",
         headers: { 'Content-Type': 'application/json' }
       })
         .then(response => {
