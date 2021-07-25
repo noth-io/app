@@ -48,7 +48,8 @@
     },
     "rules": {
       "no-unused-vars": "off",
-      "no-undef": "off"
+      "no-undef": "off",
+      "no-shadow-restricted-names": "off"
     }
   },
   "browserslist": [
