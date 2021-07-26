@@ -130,7 +130,7 @@ export default {
     initAuth() {
       axios({
         method: "post",
-        url: "https://noth.o:5000/authentication/init",
+        url: "https://api.noth.meanite.tk/authentication/init",
         headers: { 'Content-Type': 'application/json' }
       })
         .then(response => {
@@ -153,7 +153,7 @@ export default {
       const json = JSON.stringify({ username: this.username });
       axios({
         method: "post",
-        url: "https://noth.io:5000/authentication/username",
+        url: "https://api.noth.meanite.tk/authentication/username",
         data: json,
         headers: { 'Content-Type': 'application/json' }
       })
@@ -174,7 +174,7 @@ export default {
     sendAuthMail() {
       axios({
         method: "post",
-        url: "https://noth.io:5000/authentication/mail",
+        url: "https://api.noth.meanite.tk/authentication/mail",
         headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + this.authToken }
       })
         .then(response => {
@@ -189,7 +189,7 @@ export default {
     },
     fido2register() {
       var token = this.authToken
-      fetch('https://noth.io:5000/users/fido2/begin', {
+      fetch('https://api.noth.meanite.tk/users/fido2/begin', {
       method: 'POST',
       headers: {'Authorization': 'Bearer ' + token},
       credentials: 'include'
@@ -199,7 +199,7 @@ export default {
     }).then(CBOR.decode).then(function(options) {
       return navigator.credentials.create(options);
     }).then(function(attestation) {
-      return fetch('https://noth.io:5000/users/fido2/complete', {
+      return fetch('https://api.noth.meanite.tk/users/fido2/complete', {
         method: 'POST',
         headers: {'Content-Type': 'application/cbor', 'Authorization': 'Bearer ' + token},
         body: CBOR.encode({
@@ -220,7 +220,7 @@ export default {
   fido2authenticate() {
     var vm = this;
     axios({
-      url: 'https://noth.io:5000/authentication/fido2/begin',
+      url: 'https://api.noth.meanite.tk/authentication/fido2/begin',
       method: 'post',
       headers: {'Authorization': 'Bearer ' + vm.authToken},
       withCredentials: true,
@@ -232,7 +232,7 @@ export default {
       return navigator.credentials.get(options);
     }).then(function(assertion) {
       return axios({
-        url: 'https://noth.io:5000/authentication/fido2/complete',
+        url: 'https://api.noth.meanite.tk/authentication/fido2/complete',
         method: 'post',
         headers: {'Content-Type': 'application/cbor', 'Authorization': 'Bearer ' + vm.authToken},
         data: CBOR.encode({
