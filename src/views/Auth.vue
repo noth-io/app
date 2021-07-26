@@ -103,7 +103,7 @@ import jwt_decode from "jwt-decode";
 import config from "@/plugins/config.js"
 
 export default {
-  name: 'App',
+  name: 'Auth',
 
   data: () => ({
     username: null,
@@ -119,7 +119,6 @@ export default {
     else {
       this.initAuth()
     }
-    console.log(config.value('apiUrl'))
   },
 
   watch: {
