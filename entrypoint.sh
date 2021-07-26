@@ -4,7 +4,7 @@ do
   if [ ! -f $file.tmpl.js ]; then
     cp $file $file.tmpl.js
   fi
-  envsubst '$VUE_APP_API_URL' < $file.tmpl.js > $file
+  envsubst '$NOTH_UI_API_URL' < $file.tmpl.js > $file
 done
 echo "Starting Nginx"
 nginx -g 'daemon off;'
