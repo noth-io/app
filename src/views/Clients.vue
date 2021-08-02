@@ -175,8 +175,7 @@ export default {
   props: {
     type: {
       type: String,
-    },
-    title: String,
+    }
   },
   data() {
     return {
