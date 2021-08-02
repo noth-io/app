@@ -69,9 +69,10 @@ export default {
           if (response.status == 200) {
             this.validAuthMailToken = true;
             if (response.data.authenticated) {
-              console.log('authenticated');
-              this.sessionToken = response.data.session_token;
+              //console.log('authenticated');
+              //this.sessionToken = response.data.session_token;
               // redirect to dashboard (todo : update to redirect to target)
+              localStorage.removeItem('authToken');
               setTimeout( () => this.$router.push({ path: '/dashboard'}), 5000);    
             } else {
               this.authToken = response.data.auth_token;

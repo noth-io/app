@@ -9,7 +9,7 @@
               Invalid username
             </base-alert>
           </div>
-          <form role="form">
+          <form role="form" v-on:submit.prevent="usernameAuth()">
             <base-input
               formClasses="input-group-alternative mb-5"
               placeholder="Username"
@@ -123,12 +123,14 @@ export default {
           "Content-Type": "application/json",
           Authorization: "Bearer " + this.authToken,
         },
+        withCredentials: true
       })
         .then((response) => {
           if (response.status == 200) {
             if (response.data.authenticated) {
-              console.log('authenticated');
-              this.sessionToken = response.data.session_token;
+              //this.sessionToken = response.data.session_token;
+              localStorage.removeItem('authToken');
+              this.$router.push({ path: '/dashboard'});    
             } else {
               this.authToken = response.data.auth_token;
               this.authStep = jwt_decode(this.authToken).nextstep;

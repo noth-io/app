@@ -9,6 +9,7 @@ import Maps from "../views/Maps.vue";
 import Profile from "../views/UserProfile.vue";
 import Tables from "../views/Tables.vue";
 import Clients from "../views/Clients.vue";
+import NewClient from "../views/NewClient.vue";
 
 import Login from "../views/Login.vue";
 import Register from "../views/Register.vue";
@@ -52,6 +53,11 @@ const routes = [
         name: "clients",
         components: { default: Clients },
       },
+      {
+        path: "/clients/new",
+        name: "newclient",
+        components: { default: NewClient },
+      },
     ],
   },
   {
@@ -91,8 +97,11 @@ const router = createRouter({
 
 function requireAuth(to, from, next) {
   const { $cookies } = router.app.config.globalProperties;
-  console.log("session", $cookies.get("session"));
-  next();
+  if ($cookies.get("authenticated") == "true") {
+    next();
+  } else {
+    next("/login");
+  }
 }
 
 export default router;

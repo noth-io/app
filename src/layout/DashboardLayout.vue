@@ -2,7 +2,6 @@
   <div
     class="wrapper"
     :class="{ 'nav-open': $sidebar.showSidebar }"
-    v-if="sessionToken != null"
   >
     <side-bar
       :background-color="sidebarBackground"
@@ -76,7 +75,7 @@
       <div @click="toggleSidebar">
         <!-- your content here -->
         <router-view></router-view>
-        <content-footer v-if="!$route.meta.hideFooter"></content-footer>
+        <!--<content-footer v-if="!$route.meta.hideFooter"></content-footer>-->
       </div>
     </div>
   </div>
@@ -88,21 +87,22 @@ import ContentFooter from "./ContentFooter.vue";
 export default {
   components: {
     DashboardNavbar,
-    ContentFooter,
+    //ContentFooter,
   },
   data() {
     return {
       sidebarBackground: "vue", //vue|blue|orange|green|red|primary
-      sessionToken: null,
+      //sessionToken: null,
     };
   },
-  mounted() {
-    if (localStorage.sessionToken) {
+  /*mounted() {
+    console.log(this.$cookie.get("session"));
+    /*if (localStorage.sessionToken) {
       this.sessionToken = localStorage.sessionToken;
     } else {
       this.$router.push({ path: "/login" });
     }
-  },
+  },*/
   methods: {
     toggleSidebar() {
       if (this.$sidebar.showSidebar) {
