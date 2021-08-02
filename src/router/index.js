@@ -1,33 +1,98 @@
-import Vue from 'vue'
-import VueRouter from 'vue-router'
-import Home from '../views/Home.vue'
-import Register from '../views/Register.vue'
-import Auth from '../views/Auth.vue'
+import { createRouter, createWebHistory } from "vue-router";
 
-Vue.use(VueRouter)
+import DashboardLayout from "@/layout/DashboardLayout";
+import AuthLayout from "@/layout/AuthLayout";
+
+import Dashboard from "../views/Dashboard.vue";
+import Icons from "../views/Icons.vue";
+import Maps from "../views/Maps.vue";
+import Profile from "../views/UserProfile.vue";
+import Tables from "../views/Tables.vue";
+import Clients from "../views/Clients.vue";
+
+import Login from "../views/Login.vue";
+import Register from "../views/Register.vue";
+import RegisterConfirm from "../views/RegisterConfirm.vue";
+import AuthMailConfirm from "../views/AuthMailConfirm.vue";
 
 const routes = [
   {
-    path: '/',
-    name: 'Home',
-    component: Home
+    path: "/",
+    redirect: "/dashboard",
+    component: DashboardLayout,
+    beforeEnter: requireAuth,
+    children: [
+      {
+        path: "/dashboard",
+        name: "dashboard",
+        components: { default: Dashboard },
+      },
+      {
+        path: "/icons",
+        name: "icons",
+        components: { default: Icons },
+      },
+      {
+        path: "/maps",
+        name: "maps",
+        components: { default: Maps },
+      },
+      {
+        path: "/profile",
+        name: "profile",
+        components: { default: Profile },
+      },
+      {
+        path: "/tables",
+        name: "tables",
+        components: { default: Tables },
+      },
+      {
+        path: "/clients",
+        name: "clients",
+        components: { default: Clients },
+      },
+    ],
   },
   {
-    path: '/auth',
-    name: 'Auth',
-    component: Auth
+    path: "/",
+    redirect: "login",
+    component: AuthLayout,
+    children: [
+      {
+        path: "/login",
+        name: "login",
+        components: { default: Login },
+      },
+      {
+        path: "/login/mail/:emailtoken",
+        name: "authemailconfirm",
+        component: AuthMailConfirm,
+      },
+      {
+        path: "/register",
+        name: "register",
+        components: { default: Register },
+      },
+      {
+        path: "/register/confirm/:emailtoken",
+        name: "registerconfirm",
+        component: RegisterConfirm,
+      },
+    ],
   },
-  {
-    path: '/register',
-    name: 'Register',
-    component: Register
-  }
-]
+];
 
-const router = new VueRouter({
-  mode: 'history',
-  base: process.env.BASE_URL,
-  routes
-})
+const router = createRouter({
+  history: createWebHistory(),
+  linkActiveClass: "active",
+  routes,
+});
 
-export default router
+function requireAuth(to, from, next) {
+  const { $cookies } = router.app.config.globalProperties;
+  console.log("session", $cookies.get("session"));
+  next();
+}
+
+export default router;
