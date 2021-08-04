@@ -3,7 +3,7 @@
     <base-header type="gradient-success" class="pb-6 pb-8 pt-5 pt-md-8">
     </base-header>
 
-    <div class="container-fluid mt--7">
+    <div class="container-fluid mt--7 mb-4">
       <div class="row">
         <div class="col">
           <div class="card shadow" :class="type === 'dark' ? 'bg-default' : ''">
