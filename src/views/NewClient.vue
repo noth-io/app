@@ -3,7 +3,7 @@
     <base-header type="gradient-success" class="pb-6 pb-8 pt-5 pt-md-8">
     </base-header>
 
-    <div class="container-fluid mt--7">
+    <div class="container-fluid mt--7 mb-4">
       <div class="row">
         <div class="col-xl-12 order-xl-1">
           <card shadow type="secondary">
@@ -12,9 +12,6 @@
                 <div class="row align-items-center">
                   <div class="col-8">
                     <h3 class="mb-0">New client</h3>
-                  </div>
-                  <div class="col-4 text-right">
-                    <a href="#!" class="btn btn-sm btn-primary">Settings</a>
                   </div>
                 </div>
               </div>
@@ -30,7 +27,7 @@
                       label="Name"
                       placeholder="Name"
                       input-classes="form-control-alternative"
-                      v-model="model.username"
+                      v-model="clientName"
                     />
                   </div>
                   <div class="col-lg-6">
@@ -39,40 +36,55 @@
                       label="Application URL"
                       placeholder="https://example.com"
                       input-classes="form-control-alternative"
-                      v-model="model.email"
+                      v-model="clientURL"
                     />
                   </div>
                 </div>
                 <div class="row mt-4">
                   <div class="col-lg-3">
-                                  <h4 class="mb-4">Grant types</h4>
-
-   <base-checkbox class="mb-3" v-model="checkboxes.unchecked">
-      Authorization code
-  </base-checkbox>
-  <base-checkbox class="mb-3" v-model="checkboxes.checked" disabled>
-      Resource owner password
-  </base-checkbox>
-   <base-checkbox class="mb-3" v-model="checkboxes.checked" disabled>
-      Implicit
-  </base-checkbox>
+                    <h4 class="mb-4">Grant types</h4>
+                    <base-checkbox class="mb-3" v-model="grantTypes.AC">
+                      Authorization code
+                    </base-checkbox>
+                    <base-checkbox
+                      class="mb-3"
+                      v-model="grantTypes.ROP"
+                      disabled
+                    >
+                      Resource owner password
+                    </base-checkbox>
+                    <base-checkbox
+                      class="mb-3"
+                      v-model="grantTypes.IMP"
+                      disabled
+                    >
+                      Implicit
+                    </base-checkbox>
                   </div>
-                   <div class="col-lg-3">
-                                  <h4 class="mb-4">Response types</h4>
+                  <div class="col-lg-3">
+                    <h4 class="mb-4">Response types</h4>
 
-   <base-checkbox class="mb-3" v-model="checkboxes.unchecked">
-      code
-  </base-checkbox>
+                    <base-checkbox class="mb-3" v-model="responseTypes.code">
+                      code
+                    </base-checkbox>
 
-    <base-checkbox class="mb-3" v-model="checkboxes.checked">
-      id_token
-  </base-checkbox>
-    <base-checkbox class="mb-3" v-model="checkboxes.checked" disabled>
-      token
-  </base-checkbox>
-    <base-checkbox class="mb-3" v-model="checkboxes.checked" disabled>
-      none
-  </base-checkbox>
+                    <base-checkbox class="mb-3" v-model="responseTypes.IDtoken">
+                      id_token
+                    </base-checkbox>
+                    <base-checkbox
+                      class="mb-3"
+                      v-model="responseTypes.token"
+                      disabled
+                    >
+                      token
+                    </base-checkbox>
+                    <base-checkbox
+                      class="mb-3"
+                      v-model="responseTypes.none"
+                      disabled
+                    >
+                      none
+                    </base-checkbox>
                   </div>
                   <div class="col-lg-6">
                     <base-input
@@ -80,87 +92,73 @@
                       label="Redirect URI(s)"
                       placeholder="https://example.com/redirect_uri"
                       input-classes="form-control-alternative"
-                      v-model="model.lastName"
+                      v-model="clientRedirectURI"
                     />
                   </div>
                 </div>
-                                <div class="row mt-4">
+                <div class="row mt-4">
                   <div class="col-lg-6">
                     <base-input
                       alternative=""
                       label="Scopes"
-                      placeholder="Scope name"
+                      placeholder="openid profile"
                       input-classes="form-control-alternative"
-                      v-model="model.username"
+                      v-model="scopes"
                     />
                   </div>
-                  <div class="col-lg-6">
-                   <div class="input-group flex-nowrap">
-  <span class="input-group-text" id="addon-wrapping">@</span>
-  <input type="text" class="form-control" placeholder="Username" aria-label="Username" aria-describedby="addon-wrapping">
-</div>
+                </div>
+                <div class="row mt-4">
+                  <div class="col-lg-3">
+                    <h4 class="mb-4">Token endpoint auth method</h4>
+
+                    <base-radio class="mb-3" v-model="radios" value="John">
+                      client_secret_post
+                    </base-radio>
+                    <base-radio
+                      class="mb-3"
+                      v-model="radios"
+                      
+                    >
+                      client_secret_basic
+                    </base-radio>
+                    <base-radio
+                      class="mb-3"
+                      v-model="radios"
+                      
+                    >
+                      client_secret_jwt
+                    </base-radio>
+                  </div>
+                  <div class="col-lg-3 mt-5">
+                    <base-radio
+                      class="mb-3"
+                      v-model="radios"
+                      
+                    >
+                      private_key_jwt
+                    </base-radio>
+                    <base-radio
+                      class="mb-3"
+                      v-model="radios"
+                      
+                    >
+                      none
+                    </base-radio>
                   </div>
                 </div>
               </div>
               <hr class="my-4" />
-              <!-- Address -->
-              <h6 class="heading-small text-muted mb-4">Contact information</h6>
               <div class="pl-lg-4">
                 <div class="row">
-                  <div class="col-md-12">
-                    <base-input
-                      alternative=""
-                      label="Address"
-                      placeholder="Home Address"
-                      input-classes="form-control-alternative"
-                      v-model="model.address"
-                    />
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="col-lg-4">
-                    <base-input
-                      alternative=""
-                      label="City"
-                      placeholder="City"
-                      input-classes="form-control-alternative"
-                      v-model="model.city"
-                    />
-                  </div>
-                  <div class="col-lg-4">
-                    <base-input
-                      alternative=""
-                      label="Country"
-                      placeholder="Country"
-                      input-classes="form-control-alternative"
-                      v-model="model.country"
-                    />
-                  </div>
-                  <div class="col-lg-4">
-                    <base-input
-                      alternative=""
-                      label="Postal code"
-                      placeholder="Postal code"
-                      input-classes="form-control-alternative"
-                      v-model="model.zipCode"
-                    />
-                  </div>
-                </div>
-              </div>
-              <hr class="my-4" />
-              <!-- Description -->
-              <h6 class="heading-small text-muted mb-4">About me</h6>
-              <div class="pl-lg-4">
-                <div class="form-group">
-                  <base-input alternative="" label="About Me">
-                    <textarea
-                      rows="4"
-                      class="form-control form-control-alternative"
-                      placeholder="A few words about you ..."
+                  <div class="col-lg-12 text-center">
+                    <base-button
+                      outline
+                      type="primary"
+                      @click="this.$router.push({ path: '/clients' })"
+                      >Cancel</base-button
                     >
-A beautiful Dashboard for Bootstrap 4. It is Free and Open Source.</textarea
-                    >
-                  </base-input>
+                    <base-button type="primary" @click="test()">Submit</base-button>
+                  </div>
                 </div>
               </div>
             </form>
@@ -175,25 +173,31 @@ export default {
   name: "newclient",
   data() {
     return {
-      model: {
-        username: "",
-        email: "",
-        firstName: "",
-        lastName: "",
-        address: "",
-        city: "",
-        country: "",
-        zipCode: "",
-        about: "",
+      clientName: "",
+      clientURL: "",
+      clientRedirectURI: "",
+      scopes: "",
+      radios: "",
+      grantTypes: {
+        AC: false,
+        ROP: false,
+        IMP: false,
       },
-      checkboxes: {
-            unchecked: false,
-            checked: true,
-            uncheckedDisabled: false,
-            checkedDisabled: true
-          }
+      responseTypes: {
+        code: false,
+        IDtoken: false,
+        token: false,
+        none: false
+      }
     };
   },
+  methods: {
+    test() {
+      console.log(this.clientName)
+      console.log(this.radios)
+
+    }
+  }
 };
 </script>
 <style></style>
