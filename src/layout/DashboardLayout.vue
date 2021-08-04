@@ -16,7 +16,20 @@
             path: '/dashboard',
           }"
         />
-
+        <sidebar-item
+          :link="{
+            name: 'User Profile',
+            icon: 'ni ni-single-02 text-yellow',
+            path: '/profile',
+          }"
+        />
+        <sidebar-item
+          :link="{
+            name: 'Credentials',
+            icon: 'ni ni-key-25 text-info',
+            path: '/credentials',
+          }"
+        />
         <sidebar-item
           :link="{
             name: 'Clients',
@@ -39,13 +52,7 @@
             path: '/maps',
           }"
         />
-        <sidebar-item
-          :link="{
-            name: 'User Profile',
-            icon: 'ni ni-single-02 text-yellow',
-            path: '/profile',
-          }"
-        />
+
         <sidebar-item
           :link="{
             name: 'Tables',
@@ -53,20 +60,7 @@
             path: '/tables',
           }"
         />
-        <sidebar-item
-          :link="{
-            name: 'Login',
-            icon: 'ni ni-key-25 text-info',
-            path: '/login',
-          }"
-        />
-        <sidebar-item
-          :link="{
-            name: 'Register',
-            icon: 'ni ni-circle-08 text-pink',
-            path: '/register',
-          }"
-        />
+
       </template>
     </side-bar>
     <div class="main-content" :data="sidebarBackground">

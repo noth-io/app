@@ -10,6 +10,7 @@ import Profile from "../views/UserProfile.vue";
 import Tables from "../views/Tables.vue";
 import Clients from "../views/Clients.vue";
 import NewClient from "../views/NewClient.vue";
+import Credentials from "../views/Credentials.vue";
 
 import Login from "../views/Login.vue";
 import Register from "../views/Register.vue";
@@ -57,6 +58,11 @@ const routes = [
         path: "/clients/new",
         name: "newclient",
         components: { default: NewClient },
+      },
+      {
+        path: "/credentials",
+        name: "credentials",
+        components: { default: Credentials },
       },
     ],
   },
