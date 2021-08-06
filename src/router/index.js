@@ -17,6 +17,8 @@ import Register from "../views/Register.vue";
 import RegisterConfirm from "../views/RegisterConfirm.vue";
 import AuthMailConfirm from "../views/AuthMailConfirm.vue";*/
 import AuthLayout from "@/layout/AuthLayout";
+import DashLayout from "@/layout/DashLayout";
+
 import Login from "../views/Login.vue";
 import Register from "../views/Register.vue";
 
@@ -122,8 +124,8 @@ const routes = [
   {    
     path: "/",
     redirect: "dashboard",
-    component: AuthLayout,
-    beforeEnter: requireAuth,
+    component: DashLayout,
+    //beforeEnter: requireAuth,
     children: [
       {
         path: "/dashboard",
