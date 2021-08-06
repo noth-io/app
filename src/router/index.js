@@ -22,7 +22,8 @@ import DashLayout from "@/layout/DashLayout";
 import Login from "../views/Login.vue";
 import Register from "../views/Register.vue";
 
-import Dashboard from "../views/Dashboard.vue";
+import Clients from "../views/Clients.vue";
+import ClientEdit from "../views/ClientEdit.vue";
 
 const routes = [
     /*path: "/",
@@ -128,10 +129,15 @@ const routes = [
     //beforeEnter: requireAuth,
     children: [
       {
-        path: "/dashboard",
-        name: "dashboard",
-        component: Dashboard,
-      }
+        path: "/clients",
+        name: "clients",
+        component: Clients,
+      },
+      {
+        path: "/clients/:id",
+        name: "clientedit",
+        component: ClientEdit,
+      },
     ]
   },
 ];
