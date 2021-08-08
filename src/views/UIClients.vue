@@ -356,7 +356,7 @@
                           >Edit</a
                         >
                       </li>
-                      <li><a class="dropdown-item" href="#">Disable</a></li>
+                      <li><a class="dropdown-item" href="#" @click="disableClient(client.id)">Disable</a></li>
                       <li><hr class="dropdown-divider" /></li>
                       <li>
                         <a
@@ -430,6 +430,13 @@ export default {
       this.clientAction = "create";
       this.modal.show();
     },
+    disableClient(id) {
+      this.getClient(id);
+      this.client.enabled = false;
+      this.updateClient(id)
+      //this.client.enabled = false;
+      //console.log(this.client)
+    },
     getClients() {
       axios({
         method: "get",
@@ -485,6 +492,7 @@ export default {
         .then((response) => {
           if (response.status == 200) {
             this.client = response.data;
+            console.log(this.client)
           }
         })
         .catch((error) => {

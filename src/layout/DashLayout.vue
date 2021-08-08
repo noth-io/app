@@ -2,7 +2,7 @@
   <main>
     <div
       class="d-flex flex-column flex-shrink-0 p-3 text-white bg-dark collapse"
-      style="width: 280px"
+      style="width: 300px"
     >
       <a
         href="/"
@@ -51,45 +51,52 @@
       <hr />
       <ul class="nav nav-pills flex-column mb-auto">
         <li class="nav-item">
-          <a href="#" class="nav-link active" aria-current="page">
+          <a href="/ui/home" class="nav-link text-white" aria-current="page" v-bind:class="{ active: isActiveTab('/ui/home') }">
             <svg class="bi me-2" width="16" height="16">
               <use xlink:href="#home" />
             </svg>
             Home
           </a>
         </li>
-        <li>
-          <a href="#" class="nav-link text-white">
-            <svg class="bi me-2" width="16" height="16">
-              <use xlink:href="#speedometer2" />
-            </svg>
-            Dashboard
-          </a>
-        </li>
-        <li>
-          <a href="#" class="nav-link text-white">
-            <svg class="bi me-2" width="16" height="16">
-              <use xlink:href="#table" />
-            </svg>
-            Orders
-          </a>
-        </li>
-        <li>
-          <a href="#" class="nav-link text-white">
-            <svg class="bi me-2" width="16" height="16">
-              <use xlink:href="#grid" />
-            </svg>
-            Products
-          </a>
-        </li>
-        <li>
-          <a href="#" class="nav-link text-white">
+
+                <li>
+          <a href="/ui/userprofile" class="nav-link text-white" aria-current="page" v-bind:class="{ active: isActiveTab('/ui/userprofile') }">
             <svg class="bi me-2" width="16" height="16">
               <use xlink:href="#people-circle" />
             </svg>
-            Customers
+            User profile
           </a>
         </li>
+              <hr />
+
+                <li>
+          <a href="/ui/authentication" class="nav-link text-white" v-bind:class="{ active: isActiveTab('/ui/authentication') }">
+            <svg class="bi me-2" width="16" height="16">
+              <use xlink:href="#authentication" />
+            </svg>
+            Authentication
+          </a>
+        </li>
+        <li>
+          <a href="/ui/credentials" class="nav-link text-white" v-bind:class="{ active: isActiveTab('/ui/credentials') }">
+            <svg class="bi me-2" width="16" height="16">
+              <use xlink:href="#credentials" />
+            </svg>
+            Credentials
+          </a>
+        </li>
+              <hr />
+
+                <li>
+          <a href="/ui/clients" class="nav-link text-white" v-bind:class="{ active: isActiveTab('/ui/clients') }">
+            <svg class="bi me-2" width="16" height="16">
+              <use xlink:href="#clients" />
+            </svg>
+            OAuth2 Clients
+          </a>
+        </li>
+
+
       </ul>
       <hr />
       <div class="dropdown">
@@ -112,7 +119,7 @@
             height="32"
             class="rounded-circle me-2"
           />
-          <strong>mdo</strong>
+          <strong>{{ $cookies.get("username") }}</strong>
         </a>
         <ul
           class="dropdown-menu dropdown-menu-dark text-small shadow"
@@ -133,6 +140,16 @@
 <script>
 export default {
   name: "AuthLayout",
+  methods: {
+    isActiveTab(path) {
+      if (this.$route.fullPath == path) {
+        return true;
+      }
+      else {
+        return false
+      }
+    }
+  }
 };
 </script>
 <style scoped>

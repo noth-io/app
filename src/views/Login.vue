@@ -123,7 +123,7 @@ export default {
           if (response.status == 200) {
             if (response.data.authenticated) {
               localStorage.removeItem("authToken");
-              this.$router.push({ path: "/dashboard" });
+              this.$router.push({ path: "/ui" });
             } else {
               this.authToken = response.data.auth_token;
             }

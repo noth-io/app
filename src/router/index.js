@@ -22,83 +22,13 @@ import DashLayout from "@/layout/DashLayout";
 import Login from "../views/Login.vue";
 import Register from "../views/Register.vue";
 
-import Clients from "../views/Clients.vue";
-import ClientEdit from "../views/ClientEdit.vue";
+import UIHome from "../views/UIHome.vue";
+import UIUserProfile from "../views/UIUserProfile.vue";
+import UIAuthentication from "../views/UIAuthentication.vue";
+import UICredentials from "../views/UICredentials.vue";
+import UIClients from "../views/UIClients.vue";
 
 const routes = [
-    /*path: "/",
-    redirect: "/dashboard",
-    component: DashboardLayout,
-    beforeEnter: requireAuth,
-    children: [
-      {
-        path: "/dashboard",
-        name: "dashboard",
-        components: { default: Dashboard },
-      },
-      {
-        path: "/icons",
-        name: "icons",
-        components: { default: Icons },
-      },
-      {
-        path: "/maps",
-        name: "maps",
-        components: { default: Maps },
-      },
-      {
-        path: "/profile",
-        name: "profile",
-        components: { default: Profile },
-      },
-      {
-        path: "/tables",
-        name: "tables",
-        components: { default: Tables },
-      },
-      {
-        path: "/clients",
-        name: "clients",
-        components: { default: Clients },
-      },
-      {
-        path: "/clients/new",
-        name: "newclient",
-        components: { default: NewClient },
-      },
-      {
-        path: "/credentials",
-        name: "credentials",
-        components: { default: Credentials },
-      },
-    ],
-  },
-  {
-    path: "/",
-    redirect: "login",
-    component: AuthLayout,
-    children: [
-      {
-        path: "/login",
-        name: "login",
-        components: { default: Login },
-      },
-      {
-        path: "/login/mail/:emailtoken",
-        name: "authemailconfirm",
-        component: AuthMailConfirm,
-      },
-      {
-        path: "/register",
-        name: "register",
-        components: { default: Register },
-      },
-      {
-        path: "/register/confirm/:emailtoken",
-        name: "registerconfirm",
-        component: RegisterConfirm,
-      },
-    ],*/
   {    
     path: "/",
     redirect: "login",
@@ -123,20 +53,34 @@ const routes = [
     ]
   },
   {    
-    path: "/",
-    redirect: "dashboard",
+    path: "/ui",
+    redirect: "/ui/home",
     component: DashLayout,
-    //beforeEnter: requireAuth,
+    beforeEnter: requireAuth,
     children: [
       {
-        path: "/clients",
-        name: "clients",
-        component: Clients,
+        path: "/ui/home",
+        name: "home",
+        component: UIHome,
       },
       {
-        path: "/clients/:id",
-        name: "clientedit",
-        component: ClientEdit,
+        path: "/ui/userprofile",
+        name: "userprofile",
+        component: UIUserProfile,
+      },
+      {
+        path: "/ui/authentication",
+        name: "authentication",
+        component: UIAuthentication,
+      },      {
+        path: "/ui/credentials",
+        name: "credentials",
+        component: UICredentials,
+      }, 
+      {
+        path: "/ui/clients",
+        name: "clients",
+        component: UIClients,
       },
     ]
   },
