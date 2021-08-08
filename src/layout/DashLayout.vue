@@ -1,7 +1,7 @@
 <template>
   <main>
     <div
-      class="d-flex flex-column flex-shrink-0 p-3 text-white bg-dark"
+      class="d-flex flex-column flex-shrink-0 p-3 text-white bg-dark collapse"
       style="width: 280px"
     >
       <a

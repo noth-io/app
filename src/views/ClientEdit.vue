@@ -1,4 +1,6 @@
 <template>
+
+
   <div class="container-fluid m-4">
     <div class="row">
       <div class="card px-0">
@@ -13,7 +15,40 @@
           </div>
         </div>
         <div class="card-body">
-          
+          <form v-on:submit.prevent="usernameAuth()">
+
+          <div class="row">
+            <div class="col-lg-6">
+    <div class="form-group">
+    <label for="exampleInputEmail1">Email address</label>
+    <input type="email" class="form-control mt-2" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email">
+  </div>
+              </div>
+                          <div class="col-lg-6">
+    <div class="form-group">
+    <label for="exampleInputEmail1">Email address</label>
+    <input type="email" class="form-control mt-2" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email">
+  </div>
+              </div>
+          </div>
+                    <div class="row mt-4">
+                                  <div class="col-lg-6">
+                                    <div class="form-check">
+                                      <p>Grant type</p>
+  <input class="form-check-input" type="checkbox" value="" id="defaultCheck1" checked disabled>
+  <label class="form-check-label" for="defaultCheck1">
+    Default checkbox
+  </label>
+</div>
+<div class="form-check">
+  <input class="form-check-input" type="checkbox" value="" id="defaultCheck2" disabled>
+  <label class="form-check-label" for="defaultCheck2">
+    Disabled checkbox
+  </label>
+</div>
+</div>
+</div>
+          </form>
         </div>
       </div>
     </div>
