@@ -68,7 +68,20 @@ export default {
       authStep: null,
       authMailStatus: null,
       sessionToken: null,
+      loginInst: null,
+      loginTarget: "/ui"
     };
+  },
+
+  created() {
+    console.log(this.$route.params.logininst)
+    if (this.$route.params.logininst) {
+      this.loginInst = JSON.parse(atob(this.$route.params.logininst));
+      console.log('in')
+      if (this.loginInst.target) {
+        this.loginTarget = this.loginInst.target;
+      }
+    }
   },
 
   mounted() {
@@ -123,7 +136,7 @@ export default {
           if (response.status == 200) {
             if (response.data.authenticated) {
               localStorage.removeItem("authToken");
-              this.$router.push({ path: "/ui" });
+              window.open(this.loginTarget, "_self")
             } else {
               this.authToken = response.data.auth_token;
             }

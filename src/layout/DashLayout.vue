@@ -51,7 +51,7 @@
       <hr />
       <ul class="nav nav-pills flex-column mb-auto">
         <li class="nav-item">
-          <a href="/ui/home" class="nav-link text-white" aria-current="page" v-bind:class="{ active: isActiveTab('/ui/home') }">
+          <a href="/ui/home" class="nav-link text-white" aria-current="page" v-bind:class="{ active: isActiveTab('home') }">
             <svg class="bi me-2" width="16" height="16">
               <use xlink:href="#home" />
             </svg>
@@ -60,7 +60,7 @@
         </li>
 
                 <li>
-          <a href="/ui/userprofile" class="nav-link text-white" aria-current="page" v-bind:class="{ active: isActiveTab('/ui/userprofile') }">
+          <a href="/ui/userprofile" class="nav-link text-white" aria-current="page" v-bind:class="{ active: isActiveTab('userprofile') }">
             <svg class="bi me-2" width="16" height="16">
               <use xlink:href="#people-circle" />
             </svg>
@@ -70,7 +70,7 @@
               <hr />
 
                 <li>
-          <a href="/ui/authentication" class="nav-link text-white" v-bind:class="{ active: isActiveTab('/ui/authentication') }">
+          <a href="/ui/authentication" class="nav-link text-white" v-bind:class="{ active: isActiveTab('authentication') }">
             <svg class="bi me-2" width="16" height="16">
               <use xlink:href="#authentication" />
             </svg>
@@ -78,7 +78,7 @@
           </a>
         </li>
         <li>
-          <a href="/ui/credentials" class="nav-link text-white" v-bind:class="{ active: isActiveTab('/ui/credentials') }">
+          <a href="/ui/credentials" class="nav-link text-white" v-bind:class="{ active: isActiveTab('credentials') }">
             <svg class="bi me-2" width="16" height="16">
               <use xlink:href="#credentials" />
             </svg>
@@ -88,7 +88,7 @@
               <hr />
 
                 <li>
-          <a href="/ui/clients" class="nav-link text-white" v-bind:class="{ active: isActiveTab('/ui/clients') }">
+          <a href="/ui/clients" class="nav-link text-white" v-bind:class="{ active: isActiveTab('clients') }">
             <svg class="bi me-2" width="16" height="16">
               <use xlink:href="#clients" />
             </svg>
@@ -141,8 +141,9 @@
 export default {
   name: "AuthLayout",
   methods: {
-    isActiveTab(path) {
-      if (this.$route.fullPath == path) {
+    isActiveTab(name) {
+      console.log(this.$route)
+      if (this.$route.name == name) {
         return true;
       }
       else {

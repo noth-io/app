@@ -1,26 +1,12 @@
 import { createRouter, createWebHistory } from "vue-router";
 
-/*import DashboardLayout from "@/layout/DashboardLayout";
-import AuthLayout from "@/layout/AuthLayout";
-
-import Dashboard from "../views/Dashboard.vue";
-import Icons from "../views/Icons.vue";
-import Maps from "../views/Maps.vue";
-import Profile from "../views/UserProfile.vue";
-import Tables from "../views/Tables.vue";
-import Clients from "../views/Clients.vue";
-import NewClient from "../views/NewClient.vue";
-import Credentials from "../views/Credentials.vue";
-
-import Login from "../views/Login.vue";
-import Register from "../views/Register.vue";
-import RegisterConfirm from "../views/RegisterConfirm.vue";
-import AuthMailConfirm from "../views/AuthMailConfirm.vue";*/
 import AuthLayout from "@/layout/AuthLayout";
 import DashLayout from "@/layout/DashLayout";
 
 import Login from "../views/Login.vue";
 import Register from "../views/Register.vue";
+import OAuth2Consent from "../views/OAuth2Consent.vue";
+
 
 import UIHome from "../views/UIHome.vue";
 import UIUserProfile from "../views/UIUserProfile.vue";
@@ -33,11 +19,15 @@ const routes = [
     path: "/",
     redirect: "login",
     component: AuthLayout,
-    //beforeEnter: requireAuth,
     children: [
       {
         path: "/login",
         name: "login",
+        component: Login,
+      },
+      {
+        path: "/login/:logininst",
+        name: "loginwithinst",
         component: Login,
       },
       {
@@ -49,6 +39,11 @@ const routes = [
         path: "/register/confirm/:emailtoken",
         name: "registerconfirm",
         component: Register,
+      },
+      {
+        path: "/oauth2consent/:consenttoken",
+        name: "oauth2consent",
+        component: OAuth2Consent,
       },
     ]
   },
@@ -83,7 +78,7 @@ const routes = [
         component: UIClients,
       },
     ]
-  },
+  }
 ];
 
 const router = createRouter({
