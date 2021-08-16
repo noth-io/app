@@ -137,7 +137,7 @@
       />
     </symbol>
   </svg>
-  <router-view></router-view>
+<router-view></router-view>
 </template>
 
 <script>

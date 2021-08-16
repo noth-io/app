@@ -1,7 +1,11 @@
 <template>
-  <div>
+  <div v-if="authStep == 1">
     <form v-on:submit.prevent="usernameAuth()">
-      <div class="alert alert-danger alert-dismissible" role="alert" v-if="invalidUsername">
+      <div
+        class="alert alert-danger alert-dismissible"
+        role="alert"
+        v-if="invalidUsername"
+      >
         Invalid username
         <button
           type="button"
@@ -20,7 +24,6 @@
         />
         <label for="username">Email address</label>
       </div>
-  
 
       <div class="row align-items-start mt-4">
         <div class="col my-auto">
@@ -50,6 +53,13 @@
       </p>
     </div>
   </div>
+  <div v-if="authStep == 3">
+<div class="alert alert-warning" role="alert">
+Follow instructions to logged in with your <br/>FIDO 2 token</div>
+<div class="spinner-border mt-4" role="status">
+  <span class="visually-hidden">Loading...</span>
+</div>
+  </div>
 </template>
 
 <script>
@@ -69,15 +79,15 @@ export default {
       authMailStatus: null,
       sessionToken: null,
       loginInst: null,
-      loginTarget: "/ui"
+      loginTarget: "/ui",
     };
   },
 
   created() {
-    console.log(this.$route.params.logininst)
+    console.log(this.$route.params.logininst);
     if (this.$route.params.logininst) {
       this.loginInst = JSON.parse(atob(this.$route.params.logininst));
-      console.log('in')
+      console.log("in");
       if (this.loginInst.target) {
         this.loginTarget = this.loginInst.target;
       }
@@ -101,6 +111,9 @@ export default {
     authStep(nextStep) {
       if (nextStep == 2) {
         this.sendAuthMail();
+      }
+      else if (nextStep == 3) {
+        this.fido2Auth();
       }
     },
   },
@@ -136,7 +149,7 @@ export default {
           if (response.status == 200) {
             if (response.data.authenticated) {
               localStorage.removeItem("authToken");
-              window.open(this.loginTarget, "_self")
+              window.open(this.loginTarget, "_self");
             } else {
               this.authToken = response.data.auth_token;
             }
@@ -148,6 +161,61 @@ export default {
           }
           console.log(error);
         });
+    },
+    fido2Auth() {
+      var vm = this;
+      axios({
+        url: config.value("apiUrl") + "/authentication/fido2/begin",
+        method: "post",
+        headers: { Authorization: "Bearer " + vm.authToken },
+        withCredentials: true,
+        responseType: "arraybuffer",
+      })
+        .then((response) => {
+          if (response.status == 200) return response.data;
+          throw new Error("No credential available to authenticate!");
+        })
+        .then(CBOR.decode)
+        .then(function (options) {
+          return navigator.credentials.get(options);
+        })
+        .then(function (assertion) {
+          return axios({
+            url: config.value("apiUrl") + "/authentication/fido2/complete",
+            method: "post",
+            headers: {
+              "Content-Type": "application/cbor",
+              Authorization: "Bearer " + vm.authToken,
+            },
+            data: CBOR.encode({
+              credentialId: new Uint8Array(assertion.rawId),
+              authenticatorData: new Uint8Array(
+                assertion.response.authenticatorData
+              ),
+              clientDataJSON: new Uint8Array(assertion.response.clientDataJSON),
+              signature: new Uint8Array(assertion.response.signature),
+            }),
+            withCredentials: true,
+          });
+        })
+        .then(
+          function (response) {
+            if (response.status == 200) {
+              if (response.data.authenticated) {
+                localStorage.removeItem("authToken");
+                window.open(vm.loginTarget, "_self");
+              } else {
+                this.authToken = response.data.auth_token;
+              }
+            } else {
+              stat = "unsuccessful";
+            }
+            alert("Authentication " + stat + " More details in server log...");
+          },
+          function (reason) {
+            alert(reason);
+          }
+        );
     },
   },
 };
