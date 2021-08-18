@@ -31,6 +31,16 @@
         />
         <label for="lastname">Lastname</label>
       </div>
+            <div class="form-floating">
+        <input
+          type="tel"
+          class="form-control mt-4"
+          id="phone"
+          placeholder="0"
+          v-model="phone"
+        />
+        <label for="lastname">Phone</label>
+      </div>
       <div class="row align-items-start mt-4">
         <div class="col">
           <button
@@ -102,6 +112,7 @@ export default {
       email: null,
       firstname: null,
       lastname: null,
+      phone: null,
       registerToken: null,
       registerStep: null,
       registerMail: null,
@@ -136,6 +147,7 @@ export default {
       bodyFormData.append("email", this.email);
       bodyFormData.append("firstname", this.firstname);
       bodyFormData.append("lastname", this.lastname);
+      bodyFormData.append("phone", this.phone);
 
       axios({
         method: "post",
