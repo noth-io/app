@@ -122,17 +122,17 @@ export default {
     };
   },
   mounted() {
-    if (localStorage.registerToken) {
-      this.registerToken = localStorage.registerToken;
-      if (this.$route.params.emailtoken) {
-        this.registerConfirmToken = this.$route.params.emailtoken;
-        this.confirmMail();
-      }
+    if (sessionStorage.registerToken) {
+      this.registerToken = sessionStorage.registerToken;
+    }
+    if (this.$route.params.emailtoken) {
+      this.registerConfirmToken = this.$route.params.emailtoken;
+      this.confirmMail();
     }
   },
   watch: {
     registerToken(newToken) {
-      localStorage.registerToken = newToken;
+      sessionStorage.registerToken = newToken;
       this.registerStep = jwt_decode(newToken).step;
       this.mail = jwt_decode(this.registerToken).sub;
       if (this.registerStep == 0) {
@@ -194,7 +194,7 @@ export default {
           this.registerConfirmToken,
         headers: {
           "Content-Type": "application/json",
-          Authorization: "Bearer " + this.registerToken,
+          //Authorization: "Bearer " + this.registerToken,
         },
       })
         .then((response) => {
