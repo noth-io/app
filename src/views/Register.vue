@@ -125,6 +125,9 @@ export default {
     if (sessionStorage.registerToken) {
       this.registerToken = sessionStorage.registerToken;
     }
+    if (localStorage.registerToken) {
+      this.registerToken = localStorage.registerToken;
+    }
     if (this.$route.params.emailtoken) {
       this.registerConfirmToken = this.$route.params.emailtoken;
       this.confirmMail();
@@ -132,11 +135,14 @@ export default {
   },
   watch: {
     registerToken(newToken) {
-      sessionStorage.registerToken = newToken;
+      localStorage.registerToken = newToken;
       this.registerStep = jwt_decode(newToken).step;
       this.mail = jwt_decode(this.registerToken).sub;
       if (this.registerStep == 0) {
         this.sendConfirmMail();
+      }
+      if (this.registerStep == 2) {
+        this.sendConfirmPhone();
       }
     },
   },
@@ -169,8 +175,8 @@ export default {
     },
     sendConfirmMail() {
       axios({
-        method: "post",
-        url: config.value("apiUrl") + "/users/confirm",
+        method: "get",
+        url: config.value("apiUrl") + "/users/confirm/email",
         headers: {
           "Content-Type": "application/json",
           Authorization: "Bearer " + this.registerToken,
@@ -187,26 +193,45 @@ export default {
     },
     confirmMail() {
       axios({
-        method: "get",
+        method: "post",
         url:
           config.value("apiUrl") +
-          "/users/confirm/" +
+          "/users/confirm/email/" +
           this.registerConfirmToken,
         headers: {
           "Content-Type": "application/json",
-          //Authorization: "Bearer " + this.registerToken,
         },
       })
         .then((response) => {
           if (response.status == 200) {
-            localStorage.removeItem("registerToken");
-            this.registerConfirmed = true;
+            //localStorage.removeItem("registerToken");
+            //this.registerConfirmed = true;
             // redirect to dashboard
-            setTimeout(() => this.$router.push({ path: "/login" }), 5000);
+            //setTimeout(() => this.$router.push({ path: "/login" }), 5000);
+            this.registerToken = response.data.register_token;
           }
         })
         .catch((error) => {
           this.registerFailed = true;
+          console.log(error);
+        });
+    },
+    sendConfirmPhone() {
+      axios({
+        method: "get",
+        url: config.value("apiUrl") + "/users/confirm/phone",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + this.registerToken,
+        },
+      })
+        .then((response) => {
+          if (response.status == 200) {
+            //this.registerToken = response.data.register_token;
+            console.log(response.data)
+          }
+        })
+        .catch((error) => {
           console.log(error);
         });
     },
