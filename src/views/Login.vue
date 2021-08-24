@@ -1,5 +1,6 @@
 <template>
-  <div v-if="authStep == 1">
+<div v-if="$route.name != 'loginconfirmmail'">
+    <div v-if="authStep == null">
     <form v-on:submit.prevent="usernameAuth()">
       <div
         class="alert alert-danger alert-dismissible"
@@ -53,12 +54,62 @@
       </p>
     </div>
   </div>
-  <div v-if="authStep == 3">
+  <div v-if="authStep == '2S'">
+    <div class="alert alert-success" role="alert">
+      An email has been sent to <strong>{{ username }}</strong>
+    </div>
+    <div class="row align-items-start mt-4">
+      <div class="col">
+        <button
+          class="w-100 btn btn-lg btn-primary"
+          type="submit"
+          @click.prevent="window.alert('resend')"
+        >
+          Resend mail
+        </button>
+      </div>
+    </div>
+  </div>
+    <div v-if="authStep == 3">
+        <div class="alert alert-success" role="alert">
+      Please enter the <strong>OTP code</strong> sent to your mobile phone
+    </div>
+            <div class="alert alert-danger" role="alert" v-if="invalidOTPCode">
+      Invalid OTP code
+    </div>
+    <form v-on:submit.prevent="validatePhone()">
+      <div class="form-floating">
+        <input
+          type="text"
+          class="form-control"
+          id="otpcode"
+          placeholder="000000"
+          v-model="otpcode"
+        />
+        <label for="otpcode">OTP code</label>
+      </div>
+      <div class="row align-items-start mt-4">
+        <div class="col">
+          <button
+            class="w-100 btn btn-lg btn-primary"
+            type="submit"
+          >
+            Validate OTP code
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+  <div v-if="authStep == 4">
 <div class="alert alert-warning" role="alert">
 Follow instructions to logged in with your <br/>FIDO 2 token</div>
 <div class="spinner-border mt-4" role="status">
   <span class="visually-hidden">Loading...</span>
 </div>
+  </div>
+</div>
+<div v-if="$route.name == 'loginconfirmmail'">
+  titi
   </div>
 </template>
 
@@ -80,39 +131,45 @@ export default {
       sessionToken: null,
       loginInst: null,
       loginTarget: "/ui",
+      mailAuthToken: null,
+      invalidOTPCode: false
     };
   },
 
   created() {
-    console.log(this.$route.params.logininst);
-    if (this.$route.params.logininst) {
+    if (this.$route.name == "loginwithinst") {
       this.loginInst = JSON.parse(atob(this.$route.params.logininst));
       console.log("in");
       if (this.loginInst.target) {
         this.loginTarget = this.loginInst.target;
       }
     }
+    if (this.$route.name == "loginconfirmmail") {
+      this.mailAuthToken = this.$route.params.emailtoken;
+      this.confirmAuthMail();
+    }
   },
 
   mounted() {
-    if (localStorage.authToken) {
-      this.authToken = localStorage.authToken;
+    if (sessionStorage.authToken) {
+      this.authToken = sessionStorage.authToken;
       this.authStep = jwt_decode(this.authToken).nextstep;
-    } else {
-      this.initAuth();
-    }
+    } 
+    //else {
+      //this.initAuth();
+    //}
   },
 
   watch: {
     authToken(newToken) {
-      localStorage.authToken = newToken;
+      sessionStorage.authToken = newToken;
       this.authStep = jwt_decode(this.authToken).nextstep;
     },
     authStep(nextStep) {
       if (nextStep == 2) {
         this.sendAuthMail();
       }
-      else if (nextStep == 3) {
+      else if (nextStep == 4) {
         this.fido2Auth();
       }
     },
@@ -148,7 +205,7 @@ export default {
         .then((response) => {
           if (response.status == 200) {
             if (response.data.authenticated) {
-              localStorage.removeItem("authToken");
+              sessionStorage.removeItem("authToken");
               window.open(this.loginTarget, "_self");
             } else {
               this.authToken = response.data.auth_token;
@@ -160,6 +217,87 @@ export default {
             this.invalidUsername = true;
           }
           console.log(error);
+        });
+    },
+    sendAuthMail() {
+      axios({
+        method: "get",
+        url: config.value("apiUrl") + "/authentication/mail",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + this.authToken,
+        },
+      })
+        .then((response) => {
+          if (response.status == 200) {
+            this.authToken = response.data.auth_token;
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    },
+    confirmAuthMail() {
+      axios({
+        method: "post",
+        url:
+          config.value("apiUrl") +
+          "/authentication/mail/" +
+          this.mailAuthToken,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
+        .then((response) => {
+          if (response.status == 200) {
+            this.authToken = response.data.auth_token;
+            this.$router.push({ path: '/login' })
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    },
+    sendOTPSMS() {
+      axios({
+        method: "get",
+        url: config.value("apiUrl") + "/authentication/otpsms",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + this.registerToken,
+        },
+      })
+        .then((response) => {
+          if (response.status == 200) {
+            this.registerToken = response.data.register_token;
+            //console.log(response.data)
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    },
+    validatePhone() {
+      const json = JSON.stringify({ otpcode: this.otpcode });
+      axios({
+        method: "post",
+        url: config.value("apiUrl") + "/users/confirm/phone",
+        data: json,
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + this.registerToken,
+        },
+      })
+        .then((response) => {
+          if (response.status == 200) {
+            this.registerToken = response.data.register_token;
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+          if (error.response.status == 401) {
+            this.invalidOTPCode = true;
+          }
         });
     },
     fido2Auth() {
@@ -202,7 +340,7 @@ export default {
           function (response) {
             if (response.status == 200) {
               if (response.data.authenticated) {
-                localStorage.removeItem("authToken");
+                sessionStorage.removeItem("authToken");
                 window.open(vm.loginTarget, "_self");
               } else {
                 this.authToken = response.data.auth_token;

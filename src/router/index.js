@@ -26,6 +26,11 @@ const routes = [
         component: Login,
       },
       {
+        path: "/login/mail/:emailtoken",
+        name: "loginconfirmmail",
+        component: Login,
+      },
+      {
         path: "/login/:logininst",
         name: "loginwithinst",
         component: Login,
