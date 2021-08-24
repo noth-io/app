@@ -75,6 +75,36 @@
       </div>
     </div>
   </div>
+  <div v-if="registerStep == 3">
+        <div class="alert alert-success" role="alert">
+      Please enter the <strong>OTP code</strong> sent to your mobile phone
+    </div>
+            <div class="alert alert-danger" role="alert" v-if="invalidOTPCode">
+      Invalid OTP code
+    </div>
+    <form v-on:submit.prevent="validatePhone()">
+      <div class="form-floating">
+        <input
+          type="text"
+          class="form-control"
+          id="otpcode"
+          placeholder="000000"
+          v-model="otpcode"
+        />
+        <label for="otpcode">OTP code</label>
+      </div>
+      <div class="row align-items-start mt-4">
+        <div class="col">
+          <button
+            class="w-100 btn btn-lg btn-primary"
+            type="submit"
+          >
+            Validate OTP code
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
   <div v-if="registerConfirmed == true">
     <div class="alert alert-success" role="alert">
       Your registration is confirmed. <br />
@@ -119,16 +149,19 @@ export default {
       registerConfirmToken: null,
       registerConfirmed: false,
       registerFailed: false,
+      otpcode: null,
+      invalidOTPCode: false,
+      loginTarget: "/ui",
     };
   },
-  mounted() {
+  created() {
     if (sessionStorage.registerToken) {
       this.registerToken = sessionStorage.registerToken;
     }
     if (localStorage.registerToken) {
       this.registerToken = localStorage.registerToken;
     }
-    if (this.$route.params.emailtoken) {
+    if (this.registerStep == 1 && this.$route.params.emailtoken) {
       this.registerConfirmToken = this.$route.params.emailtoken;
       this.confirmMail();
     }
@@ -143,6 +176,9 @@ export default {
       }
       if (this.registerStep == 2) {
         this.sendConfirmPhone();
+      }
+      if (this.registerStep == 4) {
+        this.exchangeRegisterToken();
       }
     },
   },
@@ -227,8 +263,53 @@ export default {
       })
         .then((response) => {
           if (response.status == 200) {
-            //this.registerToken = response.data.register_token;
-            console.log(response.data)
+            this.registerToken = response.data.register_token;
+            //console.log(response.data)
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    },
+    validatePhone() {
+      const json = JSON.stringify({ otpcode: this.otpcode });
+      axios({
+        method: "post",
+        url: config.value("apiUrl") + "/users/confirm/phone",
+        data: json,
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + this.registerToken,
+        },
+      })
+        .then((response) => {
+          if (response.status == 200) {
+            this.registerToken = response.data.register_token;
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+          if (error.response.status == 401) {
+            this.invalidOTPCode = true;
+          }
+        });
+    },
+    exchangeRegisterToken() {
+      axios({
+        method: "get",
+        url: config.value("apiUrl") + "/authentication/tokenexchange",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + this.registerToken,
+        },
+        withCredentials: true,
+      })
+        .then((response) => {
+          if (response.status == 200) {
+            if (response.data.authenticated) {
+              localStorage.removeItem("registerToken");
+              window.open(this.loginTarget, "_self");
+            }
           }
         })
         .catch((error) => {
