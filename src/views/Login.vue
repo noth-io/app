@@ -173,7 +173,7 @@ export default {
         this.sendOTPSMS();
       }
       else if (nextStep == 4) {
-        //this.fido2Auth();
+        this.fido2Auth();
         console.log("fido2")
       }
     },
@@ -231,6 +231,7 @@ export default {
           "Content-Type": "application/json",
           Authorization: "Bearer " + this.authToken,
         },
+        withCredentials: true,
       })
         .then((response) => {
           if (response.status == 200) {
@@ -251,6 +252,7 @@ export default {
         headers: {
           "Content-Type": "application/json",
         },
+        withCredentials: true,
       })
         .then((response) => {
           if (response.status == 200) {
@@ -270,6 +272,7 @@ export default {
           "Content-Type": "application/json",
           Authorization: "Bearer " + this.authToken,
         },
+        withCredentials: true,
       })
         .then((response) => {
           if (response.status == 200) {
@@ -291,6 +294,7 @@ export default {
           "Content-Type": "application/json",
           Authorization: "Bearer " + this.authToken,
         },
+        withCredentials: true,
       })
         .then((response) => {
           if (response.status == 200) {
