@@ -70,14 +70,14 @@
       </div>
     </div>
   </div>
-    <div v-if="authStep == 3">
+    <div v-if="authStep == '3S'">
         <div class="alert alert-success" role="alert">
       Please enter the <strong>OTP code</strong> sent to your mobile phone
     </div>
             <div class="alert alert-danger" role="alert" v-if="invalidOTPCode">
       Invalid OTP code
     </div>
-    <form v-on:submit.prevent="validatePhone()">
+    <form v-on:submit.prevent="checkOTPSMS()">
       <div class="form-floating">
         <input
           type="text"
@@ -169,8 +169,12 @@ export default {
       if (nextStep == 2) {
         this.sendAuthMail();
       }
+      else if (nextStep == 3) {
+        this.sendOTPSMS();
+      }
       else if (nextStep == 4) {
-        this.fido2Auth();
+        //this.fido2Auth();
+        console.log("fido2")
       }
     },
   },
@@ -264,12 +268,12 @@ export default {
         url: config.value("apiUrl") + "/authentication/otpsms",
         headers: {
           "Content-Type": "application/json",
-          Authorization: "Bearer " + this.registerToken,
+          Authorization: "Bearer " + this.authToken,
         },
       })
         .then((response) => {
           if (response.status == 200) {
-            this.registerToken = response.data.register_token;
+            this.authToken = response.data.auth_token;
             //console.log(response.data)
           }
         })
@@ -277,21 +281,25 @@ export default {
           console.log(error);
         });
     },
-    validatePhone() {
+    checkOTPSMS() {
       const json = JSON.stringify({ otpcode: this.otpcode });
       axios({
         method: "post",
-        url: config.value("apiUrl") + "/users/confirm/phone",
+        url: config.value("apiUrl") + "/authentication/otpsms",
         data: json,
         headers: {
           "Content-Type": "application/json",
-          Authorization: "Bearer " + this.registerToken,
+          Authorization: "Bearer " + this.authToken,
         },
       })
         .then((response) => {
           if (response.status == 200) {
-            this.registerToken = response.data.register_token;
-          }
+            if (response.data.authenticated) {
+              sessionStorage.removeItem("authToken");
+              window.open(this.loginTarget, "_self");
+            } else {
+              this.authToken = response.data.auth_token;
+            }          }
         })
         .catch((error) => {
           console.log(error);
