@@ -94,7 +94,7 @@ const router = createRouter({
 
 function requireAuth(to, from, next) {
   const { $cookies } = router.app.config.globalProperties;
-  if ($cookies.get("authenticated") == "true") {
+  if ($cookies.get("authenticated") == "True") {
     next();
   } else {
     next("/login");

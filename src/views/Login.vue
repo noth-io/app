@@ -54,7 +54,7 @@
       </p>
     </div>
   </div>
-  <div v-if="authStep == '2S'">
+  <div v-if="authStep == '21'">
     <div class="alert alert-success" role="alert">
       An email has been sent to <strong>{{ username }}</strong>
     </div>
@@ -70,7 +70,7 @@
       </div>
     </div>
   </div>
-    <div v-if="authStep == '3S'">
+    <div v-if="authStep == '31'">
         <div class="alert alert-success" role="alert">
       Please enter the <strong>OTP code</strong> sent to your mobile phone
     </div>
@@ -166,10 +166,10 @@ export default {
       this.authStep = jwt_decode(this.authToken).nextstep;
     },
     authStep(nextStep) {
-      if (nextStep == 2) {
+      if (nextStep == 20) {
         this.sendAuthMail();
       }
-      else if (nextStep == 3) {
+      else if (nextStep == 30) {
         this.sendOTPSMS();
       }
       else if (nextStep == 4) {
@@ -179,26 +179,11 @@ export default {
     },
   },
   methods: {
-    initAuth() {
-      axios({
-        method: "post",
-        url: config.value("apiUrl") + "/authentication/init",
-        headers: { "Content-Type": "application/json" },
-      })
-        .then((response) => {
-          if (response.status == 200) {
-            this.authToken = response.data.auth_token;
-          }
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    },
     usernameAuth() {
-      const json = JSON.stringify({ username: this.username });
+      const json = JSON.stringify({ email: this.username });
       axios({
         method: "post",
-        url: config.value("apiUrl") + "/authentication/username",
+        url: config.value("apiUrl") + "/v1/auth/username",
         data: json,
         headers: {
           "Content-Type": "application/json",
@@ -226,7 +211,7 @@ export default {
     sendAuthMail() {
       axios({
         method: "get",
-        url: config.value("apiUrl") + "/authentication/mail",
+        url: config.value("apiUrl") + "/v1/auth/email",
         headers: {
           "Content-Type": "application/json",
           Authorization: "Bearer " + this.authToken,
@@ -247,7 +232,7 @@ export default {
         method: "post",
         url:
           config.value("apiUrl") +
-          "/authentication/mail/" +
+          "/v1/auth/email/" +
           this.mailAuthToken,
         headers: {
           "Content-Type": "application/json",
@@ -267,7 +252,7 @@ export default {
     sendOTPSMS() {
       axios({
         method: "get",
-        url: config.value("apiUrl") + "/authentication/otpsms",
+        url: config.value("apiUrl") + "/v1/auth/otpsms",
         headers: {
           "Content-Type": "application/json",
           Authorization: "Bearer " + this.authToken,
@@ -285,10 +270,10 @@ export default {
         });
     },
     checkOTPSMS() {
-      const json = JSON.stringify({ otpcode: this.otpcode });
+      const json = JSON.stringify({ code: this.otpcode });
       axios({
         method: "post",
-        url: config.value("apiUrl") + "/authentication/otpsms",
+        url: config.value("apiUrl") + "/v1/auth/otpsms",
         data: json,
         headers: {
           "Content-Type": "application/json",
