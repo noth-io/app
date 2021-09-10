@@ -300,7 +300,7 @@ export default {
     fido2Auth() {
       var vm = this;
       axios({
-        url: config.value("apiUrl") + "/authentication/fido2/begin",
+        url: config.value("apiUrl") + "/v1/auth/fido2/begin",
         method: "post",
         headers: { Authorization: "Bearer " + vm.authToken },
         withCredentials: true,
@@ -316,7 +316,7 @@ export default {
         })
         .then(function (assertion) {
           return axios({
-            url: config.value("apiUrl") + "/authentication/fido2/complete",
+            url: config.value("apiUrl") + "/v1/auth/fido2/complete",
             method: "post",
             headers: {
               "Content-Type": "application/cbor",
