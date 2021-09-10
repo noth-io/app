@@ -106,7 +106,7 @@ export default {
     getFido2Creds() {
       axios({
         method: "get",
-        url: config.value("apiUrl") + "/credentials/fido2",
+        url: config.value("apiUrl") + "/v1/credentials/fido2",
         headers: {
           "Content-Type": "application/json"
         },
@@ -123,7 +123,7 @@ export default {
         });
     },
     fido2register() {
-      fetch(config.value("apiUrl") + "/credentials/fido2/register/begin", {
+      fetch(config.value("apiUrl") + "/v1/credentials/fido2/register/begin", {
         method: "POST",
         credentials: "include",
       })
@@ -136,7 +136,7 @@ export default {
           return navigator.credentials.create(options);
         })
         .then(function (attestation) {
-          return fetch(config.value("apiUrl") + "/credentials/fido2/register/complete", {
+          return fetch(config.value("apiUrl") + "/v1/credentials/fido2/register/complete", {
             method: "POST",
             headers: {
               "Content-Type": "application/cbor",
