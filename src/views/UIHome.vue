@@ -9,9 +9,7 @@
             </div>
           </div>
         </div>
-        <div class="card-body">
-home
-        </div>
+        <div class="card-body">home</div>
       </div>
     </div>
   </div>
@@ -27,4 +25,3 @@ export default {
   name: "home",
 };
 </script>
-

@@ -1,116 +1,112 @@
 <template>
-<div v-if="$route.name != 'loginconfirmmail'">
+  <div v-if="$route.name != 'loginconfirmmail'">
     <div v-if="authStep == null">
-    <form v-on:submit.prevent="usernameAuth()">
-      <div
-        class="alert alert-danger alert-dismissible"
-        role="alert"
-        v-if="invalidUsername"
-      >
-        Invalid username
-        <button
-          type="button"
-          class="btn-close"
-          data-bs-dismiss="alert"
-          aria-label="Close"
-        ></button>
-      </div>
-      <div class="form-floating">
-        <input
-          type="email"
-          class="form-control"
-          id="username"
-          placeholder="name@example.com"
-          v-model="username"
-        />
-        <label for="username">Email address</label>
-      </div>
+      <form v-on:submit.prevent="usernameAuth()">
+        <div
+          class="alert alert-danger alert-dismissible"
+          role="alert"
+          v-if="invalidUsername"
+        >
+          Invalid username
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="alert"
+            aria-label="Close"
+          ></button>
+        </div>
+        <div class="form-floating">
+          <input
+            type="email"
+            class="form-control"
+            id="username"
+            placeholder="name@example.com"
+            v-model="username"
+          />
+          <label for="username">Email address</label>
+        </div>
 
-      <div class="row align-items-start mt-4">
-        <div class="col my-auto">
-          <div class="form-check form-switch">
-            <input
-              class="form-check-input"
-              type="checkbox"
-              id="flexSwitchCheckChecked"
-              checked
-            />
-            <label class="form-check-label" for="flexSwitchCheckChecked"
-              >Remember me</label
-            >
+        <div class="row align-items-start mt-4">
+          <div class="col my-auto">
+            <div class="form-check form-switch">
+              <input
+                class="form-check-input"
+                type="checkbox"
+                id="flexSwitchCheckChecked"
+                checked
+              />
+              <label class="form-check-label" for="flexSwitchCheckChecked"
+                >Remember me</label
+              >
+            </div>
+          </div>
+          <div class="col">
+            <button class="w-100 btn btn-lg btn-primary" type="submit">
+              Login
+            </button>
           </div>
         </div>
-        <div class="col">
-          <button class="w-100 btn btn-lg btn-primary" type="submit">
-            Login
-          </button>
-        </div>
-      </div>
-    </form>
-    <div class="row mt-5 p-4">
-      <p>
-        Want to use Noth ?
-        <router-link :to="'register'">register here</router-link>
-      </p>
-    </div>
-  </div>
-  <div v-if="authStep == '21'">
-    <div class="alert alert-success" role="alert">
-      An email has been sent to <strong>{{ username }}</strong>
-    </div>
-    <div class="row align-items-start mt-4">
-      <div class="col">
-        <button
-          class="w-100 btn btn-lg btn-primary"
-          type="submit"
-          @click.prevent="window.alert('resend')"
-        >
-          Resend mail
-        </button>
+      </form>
+      <div class="row mt-5 p-4">
+        <p>
+          Want to use Noth ?
+          <router-link :to="'register'">register here</router-link>
+        </p>
       </div>
     </div>
-  </div>
-    <div v-if="authStep == '31'">
-        <div class="alert alert-success" role="alert">
-      Please enter the <strong>OTP code</strong> sent to your mobile phone
-    </div>
-            <div class="alert alert-danger" role="alert" v-if="invalidOTPCode">
-      Invalid OTP code
-    </div>
-    <form v-on:submit.prevent="checkOTPSMS()">
-      <div class="form-floating">
-        <input
-          type="text"
-          class="form-control"
-          id="otpcode"
-          placeholder="000000"
-          v-model="otpcode"
-        />
-        <label for="otpcode">OTP code</label>
+    <div v-if="authStep == '21'">
+      <div class="alert alert-success" role="alert">
+        An email has been sent to <strong>{{ username }}</strong>
       </div>
       <div class="row align-items-start mt-4">
         <div class="col">
           <button
             class="w-100 btn btn-lg btn-primary"
             type="submit"
+            @click.prevent="window.alert('resend')"
           >
-            Validate OTP code
+            Resend mail
           </button>
         </div>
       </div>
-    </form>
+    </div>
+    <div v-if="authStep == '31'">
+      <div class="alert alert-success" role="alert">
+        Please enter the <strong>OTP code</strong> sent to your mobile phone
+      </div>
+      <div class="alert alert-danger" role="alert" v-if="invalidOTPCode">
+        Invalid OTP code
+      </div>
+      <form v-on:submit.prevent="checkOTPSMS()">
+        <div class="form-floating">
+          <input
+            type="text"
+            class="form-control"
+            id="otpcode"
+            placeholder="000000"
+            v-model="otpcode"
+          />
+          <label for="otpcode">OTP code</label>
+        </div>
+        <div class="row align-items-start mt-4">
+          <div class="col">
+            <button class="w-100 btn btn-lg btn-primary" type="submit">
+              Validate OTP code
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+    <div v-if="authStep == 4">
+      <div class="alert alert-warning" role="alert">
+        Follow instructions to logged in with your <br />FIDO 2 token
+      </div>
+      <div class="spinner-border mt-4" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+    </div>
   </div>
-  <div v-if="authStep == 4">
-<div class="alert alert-warning" role="alert">
-Follow instructions to logged in with your <br/>FIDO 2 token</div>
-<div class="spinner-border mt-4" role="status">
-  <span class="visually-hidden">Loading...</span>
-</div>
-  </div>
-</div>
-<div v-if="$route.name == 'loginconfirmmail'">
-  titi
-  </div>
+  <div v-if="$route.name == 'loginconfirmmail'">titi</div>
 </template>
 
 <script>
@@ -132,7 +128,7 @@ export default {
       loginInst: null,
       loginTarget: "/ui",
       mailAuthToken: null,
-      invalidOTPCode: false
+      invalidOTPCode: false,
     };
   },
 
@@ -154,9 +150,9 @@ export default {
     if (sessionStorage.authToken) {
       this.authToken = sessionStorage.authToken;
       this.authStep = jwt_decode(this.authToken).nextstep;
-    } 
+    }
     //else {
-      //this.initAuth();
+    //this.initAuth();
     //}
   },
 
@@ -168,13 +164,11 @@ export default {
     authStep(nextStep) {
       if (nextStep == 20) {
         this.sendAuthMail();
-      }
-      else if (nextStep == 30) {
+      } else if (nextStep == 30) {
         this.sendOTPSMS();
-      }
-      else if (nextStep == 4) {
+      } else if (nextStep == 4) {
         this.fido2Auth();
-        console.log("fido2")
+        console.log("fido2");
       }
     },
   },
@@ -230,10 +224,7 @@ export default {
     confirmAuthMail() {
       axios({
         method: "post",
-        url:
-          config.value("apiUrl") +
-          "/v1/auth/email/" +
-          this.mailAuthToken,
+        url: config.value("apiUrl") + "/v1/auth/email/" + this.mailAuthToken,
         headers: {
           "Content-Type": "application/json",
         },
@@ -242,7 +233,7 @@ export default {
         .then((response) => {
           if (response.status == 200) {
             this.authToken = response.data.auth_token;
-            this.$router.push({ path: '/login' })
+            this.$router.push({ path: "/login" });
           }
         })
         .catch((error) => {
@@ -288,7 +279,8 @@ export default {
               window.open(this.loginTarget, "_self");
             } else {
               this.authToken = response.data.auth_token;
-            }          }
+            }
+          }
         })
         .catch((error) => {
           console.log(error);
@@ -355,4 +347,3 @@ export default {
   },
 };
 </script>
-

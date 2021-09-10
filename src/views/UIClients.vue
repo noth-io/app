@@ -10,14 +10,24 @@
     aria-hidden="true"
   >
     <div
-      class="
-        modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable
-      "
+      class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable"
     >
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="staticBackdropLabel" v-if="clientAction == 'update'">Edit client</h5>
-                    <h5 class="modal-title" id="staticBackdropLabel" v-if="clientAction == 'create'">Create client</h5>
+          <h5
+            class="modal-title"
+            id="staticBackdropLabel"
+            v-if="clientAction == 'update'"
+          >
+            Edit client
+          </h5>
+          <h5
+            class="modal-title"
+            id="staticBackdropLabel"
+            v-if="clientAction == 'create'"
+          >
+            Create client
+          </h5>
 
           <button
             type="button"
@@ -223,9 +233,7 @@
     aria-hidden="true"
   >
     <div
-      class="
-        modal-dialog modal modal-dialog-centered modal-dialog-scrollable
-      "
+      class="modal-dialog modal modal-dialog-centered modal-dialog-scrollable"
     >
       <div class="modal-content">
         <div class="modal-header">
@@ -249,7 +257,7 @@
                 disabled
               />
             </div>
-                        <div class="col-12">
+            <div class="col-12">
               <label for="clientSecret" class="form-label">Client secret</label>
               <input
                 type="text"
@@ -259,7 +267,7 @@
                 disabled
               />
             </div>
-            </form>
+          </form>
         </div>
         <div class="modal-footer">
           <button
@@ -310,7 +318,7 @@
           </div>
         </div>
         <div class="card-body">
-                    <div class="alert alert-success" role="alert" v-if="clientCreated">
+          <div class="alert alert-success" role="alert" v-if="clientCreated">
             Client successfully <strong>created</strong>
           </div>
           <div class="alert alert-success" role="alert" v-if="clientUpdated">
@@ -356,7 +364,14 @@
                           >Edit</a
                         >
                       </li>
-                      <li><a class="dropdown-item" href="#" @click="disableClient(client.id)">Disable</a></li>
+                      <li>
+                        <a
+                          class="dropdown-item"
+                          href="#"
+                          @click="disableClient(client.id)"
+                          >Disable</a
+                        >
+                      </li>
                       <li><hr class="dropdown-divider" /></li>
                       <li>
                         <a
@@ -433,7 +448,7 @@ export default {
     disableClient(id) {
       this.getClient(id);
       this.client.enabled = false;
-      this.updateClient(id)
+      this.updateClient(id);
       //this.client.enabled = false;
       //console.log(this.client)
     },
@@ -456,7 +471,7 @@ export default {
         });
     },
     createClient() {
-      console.log(this.client)
+      console.log(this.client);
       axios({
         method: "post",
         url: config.value("apiUrl") + "/oauth2/clients",
@@ -473,7 +488,6 @@ export default {
             this.refresh = true;
             this.modal.hide();
             this.modalShowSecret.show();
-
           }
         })
         .catch((error) => {
@@ -492,7 +506,7 @@ export default {
         .then((response) => {
           if (response.status == 200) {
             this.client = response.data;
-            console.log(this.client)
+            console.log(this.client);
           }
         })
         .catch((error) => {
@@ -543,4 +557,3 @@ export default {
   },
 };
 </script>
-

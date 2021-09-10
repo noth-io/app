@@ -9,8 +9,7 @@
             </div>
           </div>
         </div>
-        <div class="card-body">
-Authentication        </div>
+        <div class="card-body">Authentication</div>
       </div>
     </div>
   </div>
@@ -26,4 +25,3 @@ export default {
   name: "authentication",
 };
 </script>
-

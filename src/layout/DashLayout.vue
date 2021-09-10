@@ -6,13 +6,7 @@
     >
       <a
         href="/"
-        class="
-          d-flex
-          align-items-center
-          mb-3 mb-md-0
-          me-md-auto
-          text-white text-decoration-none
-        "
+        class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none"
       >
         <div class="mt-1">
           <svg
@@ -51,7 +45,12 @@
       <hr />
       <ul class="nav nav-pills flex-column mb-auto">
         <li class="nav-item">
-          <a href="/ui/home" class="nav-link text-white" aria-current="page" v-bind:class="{ active: isActiveTab('home') }">
+          <a
+            href="/ui/home"
+            class="nav-link text-white"
+            aria-current="page"
+            v-bind:class="{ active: isActiveTab('home') }"
+          >
             <svg class="bi me-2" width="16" height="16">
               <use xlink:href="#home" />
             </svg>
@@ -59,18 +58,27 @@
           </a>
         </li>
 
-                <li>
-          <a href="/ui/userprofile" class="nav-link text-white" aria-current="page" v-bind:class="{ active: isActiveTab('userprofile') }">
+        <li>
+          <a
+            href="/ui/userprofile"
+            class="nav-link text-white"
+            aria-current="page"
+            v-bind:class="{ active: isActiveTab('userprofile') }"
+          >
             <svg class="bi me-2" width="16" height="16">
               <use xlink:href="#people-circle" />
             </svg>
             User profile
           </a>
         </li>
-              <hr />
+        <hr />
 
-                <li>
-          <a href="/ui/authentication" class="nav-link text-white" v-bind:class="{ active: isActiveTab('authentication') }">
+        <li>
+          <a
+            href="/ui/authentication"
+            class="nav-link text-white"
+            v-bind:class="{ active: isActiveTab('authentication') }"
+          >
             <svg class="bi me-2" width="16" height="16">
               <use xlink:href="#authentication" />
             </svg>
@@ -78,36 +86,37 @@
           </a>
         </li>
         <li>
-          <a href="/ui/credentials" class="nav-link text-white" v-bind:class="{ active: isActiveTab('credentials') }">
+          <a
+            href="/ui/credentials"
+            class="nav-link text-white"
+            v-bind:class="{ active: isActiveTab('credentials') }"
+          >
             <svg class="bi me-2" width="16" height="16">
               <use xlink:href="#credentials" />
             </svg>
             Credentials
           </a>
         </li>
-              <hr />
+        <hr />
 
-                <li>
-          <a href="/ui/clients" class="nav-link text-white" v-bind:class="{ active: isActiveTab('clients') }">
+        <li>
+          <a
+            href="/ui/clients"
+            class="nav-link text-white"
+            v-bind:class="{ active: isActiveTab('clients') }"
+          >
             <svg class="bi me-2" width="16" height="16">
               <use xlink:href="#clients" />
             </svg>
             OAuth2 Clients
           </a>
         </li>
-
-
       </ul>
       <hr />
       <div class="dropdown">
         <a
           href="#"
-          class="
-            d-flex
-            align-items-center
-            text-white text-decoration-none
-            dropdown-toggle
-          "
+          class="d-flex align-items-center text-white text-decoration-none dropdown-toggle"
           id="dropdownUser1"
           data-bs-toggle="dropdown"
           aria-expanded="false"
@@ -142,15 +151,14 @@ export default {
   name: "AuthLayout",
   methods: {
     isActiveTab(name) {
-      console.log(this.$route)
+      console.log(this.$route);
       if (this.$route.name == name) {
         return true;
+      } else {
+        return false;
       }
-      else {
-        return false
-      }
-    }
-  }
+    },
+  },
 };
 </script>
 <style scoped>

@@ -7,7 +7,6 @@ import Login from "../views/Login.vue";
 import Register from "../views/Register.vue";
 import OAuth2Consent from "../views/OAuth2Consent.vue";
 
-
 import UIHome from "../views/UIHome.vue";
 import UIUserProfile from "../views/UIUserProfile.vue";
 import UIAuthentication from "../views/UIAuthentication.vue";
@@ -15,7 +14,7 @@ import UICredentials from "../views/UICredentials.vue";
 import UIClients from "../views/UIClients.vue";
 
 const routes = [
-  {    
+  {
     path: "/",
     redirect: "login",
     component: AuthLayout,
@@ -50,9 +49,9 @@ const routes = [
         name: "oauth2consent",
         component: OAuth2Consent,
       },
-    ]
+    ],
   },
-  {    
+  {
     path: "/ui",
     redirect: "/ui/home",
     component: DashLayout,
@@ -72,18 +71,19 @@ const routes = [
         path: "/ui/authentication",
         name: "authentication",
         component: UIAuthentication,
-      },      {
+      },
+      {
         path: "/ui/credentials",
         name: "credentials",
         component: UICredentials,
-      }, 
+      },
       {
         path: "/ui/clients",
         name: "clients",
         component: UIClients,
       },
-    ]
-  }
+    ],
+  },
 ];
 
 const router = createRouter({

@@ -9,9 +9,7 @@
             </div>
           </div>
         </div>
-        <div class="card-body">
-user profile
-        </div>
+        <div class="card-body">user profile</div>
       </div>
     </div>
   </div>
@@ -27,4 +25,3 @@ export default {
   name: "userprofile",
 };
 </script>
-

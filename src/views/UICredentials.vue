@@ -7,18 +7,19 @@
             <div class="p-2 bd-highlight">
               <h5>FIDO 2 tokens</h5>
             </div>
-                        <div class="ms-auto p-2 bd-highlight">
+            <div class="ms-auto p-2 bd-highlight">
               <button
                 type="button"
                 class="btn btn-primary"
                 @click="fido2register()"
               >
-Register FIDO2 token              </button>
+                Register FIDO2 token
+              </button>
             </div>
           </div>
         </div>
         <div class="card-body">
-                    <div class="alert alert-success" role="alert" v-if="clientCreated">
+          <div class="alert alert-success" role="alert" v-if="clientCreated">
             Client successfully <strong>created</strong>
           </div>
           <div class="alert alert-success" role="alert" v-if="clientUpdated">
@@ -57,20 +58,12 @@ Register FIDO2 token              </button>
                     </button>
                     <ul class="dropdown-menu">
                       <li>
-                        <a
-                          class="dropdown-item"
-                          href="#"
-                          >Edit</a
-                        >
+                        <a class="dropdown-item" href="#">Edit</a>
                       </li>
-                      <li><a class="dropdown-item" href="#" >Disable</a></li>
+                      <li><a class="dropdown-item" href="#">Disable</a></li>
                       <li><hr class="dropdown-divider" /></li>
                       <li>
-                        <a
-                          class="dropdown-item"
-                          href="#"
-                          >Remove</a
-                        >
+                        <a class="dropdown-item" href="#">Remove</a>
                       </li>
                     </ul>
                   </div>
@@ -93,7 +86,7 @@ import CBOR from "@/plugins/cbor.js";
 
 export default {
   name: "credentials",
-    data() {
+  data() {
     return {
       fido2creds: null,
     };
@@ -108,13 +101,13 @@ export default {
         method: "get",
         url: config.value("apiUrl") + "/v1/credentials/fido2",
         headers: {
-          "Content-Type": "application/json"
+          "Content-Type": "application/json",
         },
-        withCredentials: true
+        withCredentials: true,
       })
         .then((response) => {
           if (response.status == 200) {
-            console.log(response.data)
+            console.log(response.data);
             this.fido2creds = response.data;
           }
         })
@@ -136,21 +129,24 @@ export default {
           return navigator.credentials.create(options);
         })
         .then(function (attestation) {
-          return fetch(config.value("apiUrl") + "/v1/credentials/fido2/register/complete", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/cbor",
-            },
-            body: CBOR.encode({
-              attestationObject: new Uint8Array(
-                attestation.response.attestationObject
-              ),
-              clientDataJSON: new Uint8Array(
-                attestation.response.clientDataJSON
-              ),
-            }),
-            credentials: "include",
-          });
+          return fetch(
+            config.value("apiUrl") + "/v1/credentials/fido2/register/complete",
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/cbor",
+              },
+              body: CBOR.encode({
+                attestationObject: new Uint8Array(
+                  attestation.response.attestationObject
+                ),
+                clientDataJSON: new Uint8Array(
+                  attestation.response.clientDataJSON
+                ),
+              }),
+              credentials: "include",
+            }
+          );
         })
         .then(
           function (response) {
@@ -168,4 +164,3 @@ export default {
   },
 };
 </script>
-

@@ -31,7 +31,7 @@
         />
         <label for="lastname">Lastname</label>
       </div>
-            <div class="form-floating">
+      <div class="form-floating">
         <input
           type="tel"
           class="form-control mt-4"
@@ -43,10 +43,7 @@
       </div>
       <div class="row align-items-start mt-4">
         <div class="col">
-          <button
-            class="w-100 btn btn-lg btn-primary"
-            type="submit"
-          >
+          <button class="w-100 btn btn-lg btn-primary" type="submit">
             Register
           </button>
         </div>
@@ -76,10 +73,10 @@
     </div>
   </div>
   <div v-if="registerStep == 3">
-        <div class="alert alert-success" role="alert">
+    <div class="alert alert-success" role="alert">
       Please enter the <strong>OTP code</strong> sent to your mobile phone
     </div>
-            <div class="alert alert-danger" role="alert" v-if="invalidOTPCode">
+    <div class="alert alert-danger" role="alert" v-if="invalidOTPCode">
       Invalid OTP code
     </div>
     <form v-on:submit.prevent="validatePhone()">
@@ -95,10 +92,7 @@
       </div>
       <div class="row align-items-start mt-4">
         <div class="col">
-          <button
-            class="w-100 btn btn-lg btn-primary"
-            type="submit"
-          >
+          <button class="w-100 btn btn-lg btn-primary" type="submit">
             Validate OTP code
           </button>
         </div>
