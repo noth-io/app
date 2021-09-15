@@ -1,5 +1,6 @@
 <template>
-  <div v-if="registerStep == null">
+<div>
+  <div v-if="registerStep == 0">
     <form v-on:submit.prevent="register()">
       <div class="form-floating">
         <input
@@ -56,9 +57,9 @@
       </p>
     </div>
   </div>
-  <div v-if="registerStep == 1 && registerConfirmToken == null">
+  <div v-if="registerStep == 1">
     <div class="alert alert-success" role="alert">
-      A confirmation mail has been sent to <strong>{{ mail }}</strong>
+      A confirmation mail has been sent to <strong>{{ email }}</strong>
     </div>
     <div class="row align-items-start mt-4">
       <div class="col">
@@ -72,7 +73,8 @@
       </div>
     </div>
   </div>
-  <div v-if="registerStep == 3">
+</div>
+  <!--<div v-if="registerStep == 3">
     <div class="alert alert-success" role="alert">
       Please enter the <strong>OTP code</strong> sent to your mobile phone
     </div>
@@ -121,7 +123,7 @@
         </button>
       </div>
     </div>
-  </div>
+  </div>-->
 </template>
 
 <script>
@@ -138,7 +140,7 @@ export default {
       lastname: null,
       phone: null,
       registerToken: null,
-      registerStep: null,
+      registerStep: 0,
       registerMail: null,
       registerConfirmToken: null,
       registerConfirmed: false,
@@ -149,14 +151,14 @@ export default {
     };
   },
   created() {
-    if (sessionStorage.registerToken) {
+    /*if (sessionStorage.registerToken) {
       this.registerToken = sessionStorage.registerToken;
     }
     if (localStorage.registerToken) {
       this.registerToken = localStorage.registerToken;
-    }
-    if (this.registerStep == 1 && this.$route.params.emailtoken) {
-      this.registerConfirmToken = this.$route.params.emailtoken;
+    }*/
+    if (this.$route.params.emailtoken) {  
+      this.registerStep = 2;
       this.confirmMail();
     }
   },
@@ -178,22 +180,17 @@ export default {
   },
   methods: {
     register() {
-      var bodyFormData = new FormData();
-      bodyFormData.append("username", this.email);
-      bodyFormData.append("email", this.email);
-      bodyFormData.append("firstname", this.firstname);
-      bodyFormData.append("lastname", this.lastname);
-      bodyFormData.append("phone", this.phone);
-
+      const json = JSON.stringify({ email: this.email, firstname: this.firstname, lastname: this.lastname, phone: this.phone });
       axios({
         method: "post",
-        url: config.value("apiUrl") + "/users/",
-        data: bodyFormData,
-        headers: { "Content-Type": "multipart/form-data" },
+        url: config.value("apiUrl") + "/v1/users",
+        data: json,
+        headers: { "Content-Type": "application/json" },
       })
         .then((response) => {
-          if (response.status == 201) {
-            this.registerToken = response.data.register_token;
+          if (response.status == 200) {
+            //this.registerToken = response.data.register_token;
+            this.registerStep = 1;
           }
         })
         .catch((error) => {
@@ -203,13 +200,12 @@ export default {
           console.log(error);
         });
     },
-    sendConfirmMail() {
+    /*sendConfirmMail() {
       axios({
         method: "get",
-        url: config.value("apiUrl") + "/users/confirm/email",
+        url: config.value("apiUrl") + "/v1/users/confirm/email",
         headers: {
-          "Content-Type": "application/json",
-          Authorization: "Bearer " + this.registerToken,
+          "Content-Type": "application/json"
         },
       })
         .then((response) => {
@@ -220,25 +216,24 @@ export default {
         .catch((error) => {
           console.log(error);
         });
-    },
+    },*/
     confirmMail() {
       axios({
         method: "post",
         url:
           config.value("apiUrl") +
-          "/users/confirm/email/" +
-          this.registerConfirmToken,
+          "/v1/users/confirm/email/" +
+          this.$route.params.emailtoken,
         headers: {
           "Content-Type": "application/json",
         },
+        withCredentials: true,
       })
         .then((response) => {
           if (response.status == 200) {
-            //localStorage.removeItem("registerToken");
-            //this.registerConfirmed = true;
-            // redirect to dashboard
-            //setTimeout(() => this.$router.push({ path: "/login" }), 5000);
-            this.registerToken = response.data.register_token;
+            if (response.data.authenticated) {
+              window.open(this.loginTarget, "_self");
+            }
           }
         })
         .catch((error) => {
@@ -246,10 +241,10 @@ export default {
           console.log(error);
         });
     },
-    sendConfirmPhone() {
+    /*sendConfirmPhone() {
       axios({
         method: "get",
-        url: config.value("apiUrl") + "/users/confirm/phone",
+        url: config.value("apiUrl") + "/v1/users/confirm/phone",
         headers: {
           "Content-Type": "application/json",
           Authorization: "Bearer " + this.registerToken,
@@ -269,7 +264,7 @@ export default {
       const json = JSON.stringify({ otpcode: this.otpcode });
       axios({
         method: "post",
-        url: config.value("apiUrl") + "/users/confirm/phone",
+        url: config.value("apiUrl") + "/v1/users/confirm/phone",
         data: json,
         headers: {
           "Content-Type": "application/json",
@@ -309,7 +304,7 @@ export default {
         .catch((error) => {
           console.log(error);
         });
-    },
+    },*/
   },
 };
 </script>

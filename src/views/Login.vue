@@ -1,5 +1,6 @@
 <template>
   <div v-if="$route.name != 'loginconfirmmail'">
+    <qrcode-vue value="https://google.fr" size="300" level="H" />
     <div v-if="authStep == null">
       <form v-on:submit.prevent="usernameAuth()">
         <div
@@ -51,6 +52,7 @@
         <p>
           Want to use Noth ?
           <router-link :to="'register'">register here</router-link>
+          <router-link :to="'readqrcode'">qrcodereader</router-link>
         </p>
       </div>
     </div>
@@ -114,9 +116,13 @@ import axios from "axios";
 import CBOR from "@/plugins/cbor.js";
 import jwt_decode from "jwt-decode";
 import config from "@/plugins/config.js";
+import QrcodeVue from "qrcode.vue";
 
 export default {
   name: "Login",
+  components: {
+    QrcodeVue,
+  },
   data() {
     return {
       username: null,

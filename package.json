@@ -17,8 +17,10 @@
     "core-js": "^3.6.5",
     "dotenv": "^10.0.0",
     "element-plus": "1.0.1-beta.24",
+    "firebase": "^9.0.2",
     "jwt-decode": "^3.1.2",
     "moment": "^2.29.1",
+    "qrcode.vue": "^3.3.2",
     "register-service-worker": "^1.7.1",
     "vue": "^3.0.0",
     "vue-axios": "^3.2.5",
@@ -26,6 +28,7 @@
     "vue-sessionstorage": "^1.0.0",
     "vue-toastification": "1.7.11",
     "vue3-cookies": "^1.0.1",
+    "vue3-qr-reader": "^1.0.0",
     "yarn": "^1.22.11"
   },
   "devDependencies": {

@@ -5,6 +5,7 @@ import DashLayout from "@/layout/DashLayout";
 
 import Login from "../views/Login.vue";
 import Register from "../views/Register.vue";
+import ReadQRCode from "../views/ReadQRCode.vue";
 import OAuth2Consent from "../views/OAuth2Consent.vue";
 
 import UIHome from "../views/UIHome.vue";
@@ -43,6 +44,11 @@ const routes = [
         path: "/register/confirm/:emailtoken",
         name: "registerconfirm",
         component: Register,
+      },
+      {
+        path: "/readqrcode",
+        name: "readqrcode",
+        component: ReadQRCode,
       },
       {
         path: "/oauth2consent/:consenttoken",
