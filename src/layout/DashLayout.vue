@@ -138,7 +138,7 @@
           <li><a class="dropdown-item" href="#">Settings</a></li>
           <li><a class="dropdown-item" href="#">Profile</a></li>
           <li><hr class="dropdown-divider" /></li>
-          <li><a class="dropdown-item" href="#">Sign out</a></li>
+          <li><a class="dropdown-item" href="#" @click="logout()">Sign out</a></li>
         </ul>
       </div>
     </div>
@@ -147,6 +147,9 @@
 </template>
 
 <script>
+import axios from "axios";
+import config from "@/plugins/config.js";
+
 export default {
   name: "AuthLayout",
   methods: {
@@ -158,6 +161,26 @@ export default {
         return false;
       }
     },
+    logout() {
+      axios({
+        method: "get",
+        url: config.value("apiUrl") + "/v1/auth/logout",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        withCredentials: true,
+      })
+        .then((response) => {
+          if (response.status == 200) {
+            if (!response.data.authenticated) {
+              window.open("/login", "_self");
+          }
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
   },
 };
 </script>
